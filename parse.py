@@ -5,41 +5,47 @@ Parsing (and unparsing) boards, teams, games, etc.
 from pyparsing import Keyword, Word, nums, Or, Optional, Group
 
 import board
+from constants import BOARD_SIDE
 
 
-Edge = Keyword('|')
+def create_board_parser(side):
+    Edge = Keyword('|')
 
-Yellow = Keyword('Y')
-Blue = Keyword('BL')
-Black = Keyword('BK')
-Purple = Keyword('P')
-Red = Keyword('R')
-Green = Keyword('G')
+    Yellow = Keyword('Y')
+    Blue = Keyword('BL')
+    Black = Keyword('BK')
+    Purple = Keyword('P')
+    Red = Keyword('R')
+    Green = Keyword('G')
 
-Color = Or([Yellow, Blue, Black, Purple, Red, Green])
+    Color = Or([Yellow, Blue, Black, Purple, Red, Green])
 
-Direction = Or([Keyword('>'), Keyword('<')])
-Strength = Word(nums)
-Strike = Keyword('S') + Direction + Strength
-Attack = Keyword('A') + Direction + Strength
-Protect = Keyword('P') + Direction + Strength
+    Direction = Or([Keyword('>'), Keyword('<')])
+    Strength = Word(nums)
+    Strike = Keyword('S') + Direction + Strength
+    Attack = Keyword('A') + Direction + Strength
+    Protect = Keyword('P') + Direction + Strength
 
-TurnsLeft = Word(nums)
-Countdown = Keyword('CD') + TurnsLeft
+    TurnsLeft = Word(nums)
+    Countdown = Keyword('CD') + TurnsLeft
 
-Special = Or([Strike, Attack, Protect, Countdown])
+    Special = Or([Strike, Attack, Protect, Countdown])
 
-Colored = Color + Optional(Special)
+    Colored = Color + Optional(Special)
 
-Teamup = Keyword('T')
-Critical = Keyword('C')
-Empty = Keyword('E')
+    Teamup = Keyword('T')
+    Critical = Keyword('C')
+    Empty = Keyword('E')
 
-Uncolored = Or([Teamup, Critical, Empty])
+    Uncolored = Or([Teamup, Critical, Empty])
 
-Square = Group(Optional(Edge) + Or([Colored, Uncolored]) + Edge)
-Row = Group(Square * 8)
-Board = Row * 8
+    Square = Group(Optional(Edge) + Or([Colored, Uncolored]) + Edge)
+    Row = Group(Square * side)
+    Board = Row * side
+    return Board
+
+
+STANDARD_BOARD_PARSER = create_board_parser(BOARD_SIDE)
 
 
 def strip_pipes(sq):
@@ -85,8 +91,8 @@ def parse_row(row):
     return [to_tile(s) for s in stripped]
 
 
-def parse_board(s_board):
-    rows = Board.parseString(s_board)
+def parse_board(s_board, parser=STANDARD_BOARD_PARSER):
+    rows = parser.parseString(s_board)
     return board.Board([parse_row(row) for row in rows])
 
 

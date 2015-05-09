@@ -17,8 +17,16 @@ class EmptyTile(object):
     def __str__(self):
         return "E"
 
+    def matches(self, tile):
+        return False
 
-class ColoredTile(object):
+
+class GameTile(object):
+
+    pass
+
+
+class ColoredTile(GameTile):
 
     def __init__(self, color=None):
         self.color = color
@@ -26,17 +34,30 @@ class ColoredTile(object):
     def __str__(self):
         return self.color
 
+    def matches(self, tile):
+        return (isinstance(tile, CriticalTile)
+                or
+                (isinstance(tile, ColoredTile)
+                 and tile.color == self.color))
 
-class CriticalTile(object):
+
+class CriticalTile(GameTile):
 
     def __str__(self):
         return "C"
 
+    def matches(self, tile):
+        return isinstance(tile, GameTile)
 
-class TeamupTile(object):
+
+class TeamupTile(GameTile):
 
     def __str__(self):
         return "T"
+
+    def matches(self, tile):
+        return (isinstance(tile, TeamupTile) or
+                isinstance(tile, CriticalTile))
 
 
 class StrikeTile(ColoredTile):
@@ -94,7 +115,26 @@ def _format_row(row):
 class Board(object):
 
     def __init__(self, rows):
+        assert all(len(rows) == len(row) for row in rows)
         self.rows = rows
 
     def __str__(self):
         return '\n'.join([_format_row(row) for row in self.rows])
+
+    def at(self, row, col):
+        """
+        Return the tile at `row` `col`.
+
+        Raise an exception if out of bounds.
+        """
+        if len(self.rows) <= row:
+            raise Exception("Bad row num: %s" % row)
+
+        if len(self.rows[0]) <= col:
+            raise Exception("Bad col num: %s" % col)
+
+        return self.rows[row][col]
+
+    @property
+    def side(self):
+        return len(self.rows)

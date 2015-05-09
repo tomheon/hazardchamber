@@ -2,6 +2,7 @@ import random
 
 from board import EmptyTile, ColoredTile, CriticalTile, TeamupTile, StrikeTile, \
     AttackTile, ProtectTile, CountdownTile, Board
+from constants import BOARD_SIDE
 
 
 def _rand_color():
@@ -42,14 +43,14 @@ def _rand_tile():
 
 
 def _rand_row():
-    return [_rand_tile() for _ in range(8)]
+    return [_rand_tile() for _ in range(BOARD_SIDE)]
 
 
 def random_midgame_board():
     """
     Note: not guaranteed stable, may contain strike tiles etc.
     """
-    return Board([_rand_row() for _ in range(8)])
+    return Board([_rand_row() for _ in range(BOARD_SIDE)])
 
 
 def random_midgame_board_s():
