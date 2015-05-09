@@ -82,6 +82,31 @@ def test_find_down_match_at():
                    find_down_match_at)
 
 
+def test_find_up_match_at():
+    board_s = dedent("""\
+                     | Y | Y | G | E |
+                     | Y | R | G | E |
+                     | Y | R | G | E |
+                     | Y | R | E | E |
+                     """)
+    board = parse_board(board_s, FOUR_SIDE_PARSER)
+
+    expected = [
+        [None, None, None, None],
+        [None, None, None, None],
+        [((0, 0), (1, 0), (2, 0)), None,
+         ((2, 2), (1, 2), (0, 2)), None],
+        [((0, 0), (1, 0), (2, 0), (3, 0)),
+         ((1, 1), (2, 1), (3, 1)), None, None],
+        ]
+    for row in range(board.side):
+        for col in range(board.side):
+            yield (_verify_find_single_match,
+                   board, row, col, expected[row][col],
+                   find_up_match_at)
+
+
+
 def _verify_find_single_match(board, row, col, expected, find_under_test):
     if expected:
         expected = _m(*expected)
