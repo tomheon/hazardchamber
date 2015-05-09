@@ -47,7 +47,7 @@ def find_left_match_at(row, col, board):
 
 
 def find_right_match_at(row, col, board):
-    return _find_match_col(row, col, board, board.size, operator.lt, 1)
+    return _find_match_col(row, col, board, board.side, operator.lt, 1)
 
 
 def find_up_match_at(row, col, board):
@@ -55,7 +55,7 @@ def find_up_match_at(row, col, board):
 
 
 def find_down_match_at(row, col, board):
-    return _find_match_row(row, col, board, board.size, operator.lt, 1)
+    return _find_match_row(row, col, board, board.side, operator.lt, 1)
 
 
 def _find_match_col(row, col, board, lim, cmp_lim, incr):

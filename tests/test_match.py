@@ -23,19 +23,65 @@ def test_find_left_match_at():
                      """)
     board = parse_board(board_s, FOUR_SIDE_PARSER)
 
-    eq_(None, find_left_match_at(0, 0, board))
-    eq_(None, find_left_match_at(0, 1, board))
-    eq_(None, find_left_match_at(1, 0, board))
+    expected = [
+        [None, None, ((0, 0), (0, 1), (0, 2)), ((0, 0), (0, 1), (0, 2), (0, 3))],
+        [None, None, ((1, 0), (1, 1), (1, 2)), None],
+        [None, None, None, ((2, 1), (2, 2), (2, 3))],
+        [None, None, None, None],
+        ]
+    for row in range(board.side):
+        for col in range(board.side):
+            yield (_verify_find_single_match,
+                   board, row, col, expected[row][col],
+                   find_left_match_at)
 
-    eq_(None, find_left_match_at(1, 3, board))
 
-    eq_(None, find_left_match_at(2, 2, board))
+def test_find_right_match_at():
+    board_s = dedent("""\
+                     | Y | Y | Y | Y |
+                     | R | R | R | Y |
+                     | Y | G | G | G |
+                     | E | E | E | E |
+                     """)
+    board = parse_board(board_s, FOUR_SIDE_PARSER)
 
-    eq_(None, find_left_match_at(3, 3, board))
+    expected = [
+        [((0, 0), (0, 1), (0, 2), (0, 3)), ((0, 1), (0, 2), (0, 3)), None, None],
+        [((1, 0), (1, 1), (1, 2)), None, None, None],
+        [None, ((2, 1), (2, 2), (2, 3)), None, None],
+        [None, None, None, None],
+        ]
+    for row in range(board.side):
+        for col in range(board.side):
+            yield (_verify_find_single_match,
+                   board, row, col, expected[row][col],
+                   find_right_match_at)
 
-    eq_(_m((0, 0), (0, 1), (0, 2)), find_left_match_at(0, 2, board))
-    eq_(_m((0, 0), (0, 1), (0, 2), (0, 3)), find_left_match_at(0, 3, board))
 
-    eq_(_m((1, 0), (1, 1), (1, 2)), find_left_match_at(1, 2, board))
+def _verify_find_single_match(board, row, col, expected, find_under_test):
+    if expected:
+        expected = _m(*expected)
+    eq_(expected, find_under_test(row, col, board))
 
-    eq_(_m((2, 1), (2, 2), (2, 3)), find_left_match_at(2, 3, board))
+
+def test_critical_as_second_match_tile():
+    """
+    It would be easy to mistakenly call:
+
+    | C | Y | R |
+
+    or the like a match, if you were to only use matches() against the first
+    tile in the potential match.
+
+    Test against that.
+    """
+    board_s = dedent("""\
+                     | C | Y | R | Y |
+                     | R | R | R | Y |
+                     | Y | G | G | G |
+                     | E | E | E | E |
+                     """)
+    board = parse_board(board_s, FOUR_SIDE_PARSER)
+    eq_(None, find_right_match_at(0, 0, board))
+
+
