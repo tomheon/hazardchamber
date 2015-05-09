@@ -1,1 +1,2 @@
 BOARD_SIDE = 8
+MIN_MATCH = 3
