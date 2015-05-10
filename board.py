@@ -146,6 +146,12 @@ class Board(object):
     def __str__(self):
         return '\n'.join([_format_row(row) for row in self.rows])
 
+    def __eq__(self, other):
+        return isinstance(other, Board) and self.rows == other.rows
+
+    def hash(self):
+        return hash(tuple([tuple(r) for r in self.rows]))
+
     def at(self, row, col):
         """
         Return the tile at `row` `col`.
@@ -172,3 +178,22 @@ class Board(object):
     @property
     def side(self):
         return len(self.rows)
+
+    def swap(self, row_one, col_one, row_two, col_two):
+        """
+        Swap the tiles at (row_one, col_one) and (row_two, col_two).
+        """
+        self.rows[row_one][col_one], self.rows[row_two][col_two] = \
+            self.rows[row_two][col_two], self.rows[row_one][col_one]
+
+    def squares_from_bottom_right(self):
+        """
+        Generate (row, col) from each square, starting at the bottom (right) of
+        the board.
+
+        E.g. the first yielded value in a 8x8 board would be (7, 7), the second
+        (7, 6).
+        """
+        for row in reversed(range(self.side)):
+            for col in reversed(range(self.side)):
+                yield row, col

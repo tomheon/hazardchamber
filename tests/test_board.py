@@ -194,3 +194,15 @@ def test_copy_isolates_changes():
     new_board.at(0, 1).data = 'X'
     eq_('X', new_board.at(0, 1).data)
     eq_('B', board.at(0, 1).data)
+
+
+def test_squares_from_bottom_right():
+    board = Board([[0, 1], [2, 3]])
+    eq_([3, 2, 1, 0],
+        [board.at(row, col) for row, col in board.squares_from_bottom_right()])
+
+
+def test_swap():
+    board = Board([[0, 1], [2, 3]])
+    board.swap(0, 0, 1, 0)
+    eq_(Board([[2, 1], [0, 3]]), board)
