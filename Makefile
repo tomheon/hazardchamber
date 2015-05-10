@@ -5,7 +5,7 @@ env_req: env requirements.txt
 	env/bin/pip install -r requirements.txt
 
 lint:
-	env/bin/flake8 *.py
+	env/bin/flake8 *.py tests
 
 test:
 	env/bin/nosetests

@@ -17,9 +17,12 @@ YELLOW_ATTACK_124_OFFENSE = AttackTile(color='Y', strength=124, direction='<')
 YELLOW_ATTACK_123_DEFENSE = AttackTile(color='Y', strength=123, direction='>')
 RED_ATTACK_123_OFFENSE = AttackTile(color='R', strength=123, direction='<')
 
-YELLOW_PROTECT_123_OFFENSE = ProtectTile(color='Y', strength=123, direction='<')
-YELLOW_PROTECT_124_OFFENSE = ProtectTile(color='Y', strength=124, direction='<')
-YELLOW_PROTECT_123_DEFENSE = ProtectTile(color='Y', strength=123, direction='>')
+YELLOW_PROTECT_123_OFFENSE = ProtectTile(color='Y',
+                                         strength=123, direction='<')
+YELLOW_PROTECT_124_OFFENSE = ProtectTile(color='Y',
+                                         strength=124, direction='<')
+YELLOW_PROTECT_123_DEFENSE = ProtectTile(color='Y',
+                                         strength=123, direction='>')
 RED_PROTECT_123_OFFENSE = ProtectTile(color='R', strength=123, direction='<')
 
 YELLOW_COUNTDOWN_5 = CountdownTile(color='Y', turns_left=5)

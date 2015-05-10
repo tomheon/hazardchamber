@@ -3,7 +3,7 @@ from textwrap import dedent
 from nose.tools import eq_
 
 from parse import create_board_parser, parse_board
-from match import find_matches, find_matches_at, find_left_match_at, \
+from match import find_matches_at, find_left_match_at, \
     find_right_match_at, find_up_match_at, find_down_match_at, Match
 
 
@@ -176,5 +176,3 @@ def test_critical_as_second_match_tile():
                      """)
     board = parse_board(board_s, FOUR_SIDE_PARSER)
     eq_(None, find_right_match_at(0, 0, board))
-
-
