@@ -21,6 +21,9 @@ class Match(object):
     def __eq__(self, other):
         return isinstance(other, Match) and self.squares == other.squares
 
+    def __cmp__(self, other):
+        return cmp(self.squares, other.squares)
+
 
 def find_matches(board):
     """
@@ -39,7 +42,7 @@ def find_matches_at(row, col, board):
                find_right_match_at(row, col, board),
                find_down_match_at(row, col, board),
                find_up_match_at(row, col, board)]
-    return [m for m in matches if m]
+    return sorted([m for m in matches if m])
 
 
 def find_left_match_at(row, col, board):
