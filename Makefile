@@ -1,7 +1,7 @@
 env:
 	virtualenv -p python2.7 --no-site-packages env
 
-env_req: env requirements.txt
+install_requirements: env requirements.txt
 	env/bin/pip install -r requirements.txt
 
 lint:
