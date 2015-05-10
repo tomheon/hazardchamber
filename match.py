@@ -13,13 +13,16 @@ class Match(object):
         self.squares = sorted(squares)
 
     def __str__(self):
-        return ", ".join([str(s) for s in self.squares])
+        return "Match(%s)" % ", ".join([str(s) for s in self.squares])
 
     def __repr__(self):
         return str(self)
 
     def __eq__(self, other):
         return isinstance(other, Match) and self.squares == other.squares
+
+    def __hash__(self):
+        return hash(tuple(self.squares))
 
     def __cmp__(self, other):
         return cmp(self.squares, other.squares)
@@ -33,14 +36,20 @@ class Match(object):
 
 def find_matches(board):
     """
-    Returns a list of Match objects, one per 3-or-more match.
+    Returns a sorted list of unique Match objects, one per 3-or-more match.
+
+    Only the largest matches are returned in each case (e.g. the two 3 matches
+    that make up a 4 match will not be returned, only the 4 match).
 
     If there are no matches, returns an empty list.
     """
-    matches = []
+    matches = set()
     for row in range(board.side):
         for col in range(board.side):
-            matches.extend(find_matches_at(row, col, board))
+            matches.update(set(find_matches_at(row, col, board)))
+    return sorted([m for m
+                   in matches
+                   if not any(o.subsumes_match(m) for o in matches)])
 
 
 def find_matches_at(row, col, board):
