@@ -176,3 +176,38 @@ def test_critical_as_second_match_tile():
                      """)
     board = parse_board(board_s, FOUR_SIDE_PARSER)
     eq_(None, find_right_match_at(0, 0, board))
+
+
+def test_match_subsumes():
+    cases = [
+        ([], [], False),
+        ([(0, 1)], [], True),
+        ([(0, 1), (0, 2)], [(0, 1)], True),
+        ([(0, 1), (0, 2)], [(0, 2)], True),
+        ([], [(0, 1)], False),
+        ([(0, 1)], [(0, 1), (0, 2)], False),
+        ([(0, 2)], [(0, 1), (0, 2)], False),
+        ]
+    for (a, b, subsumes) in cases:
+        yield _verify_match_subsumes, a, b, subsumes
+
+
+def _verify_match_subsumes(a, b, subsumes):
+    eq_(subsumes, Match(a).subsumes_match(Match(b)))
+
+
+def test_square_in_match():
+    cases = [
+        ([], (0, 0), False),
+        ([(0, 0)], (0, 0), True),
+        ([(0, 0), (0, 1)], (0, 0), True),
+        ([(0, 0), (0, 1)], (0, 1), True),
+        ([(0, 0), (0, 1)], (0, 2), False),
+        ([(0, 0), (0, 1)], (1, 0), False),
+        ]
+    for (match, square, includes) in cases:
+        yield _verify_square_in_match, match, square, includes
+
+
+def _verify_square_in_match(match, square, includes):
+    eq_(includes, square in Match(match))

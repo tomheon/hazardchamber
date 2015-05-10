@@ -24,6 +24,12 @@ class Match(object):
     def __cmp__(self, other):
         return cmp(self.squares, other.squares)
 
+    def subsumes_match(self, other):
+        return set(self.squares) > set(other.squares)
+
+    def __contains__(self, square_coord):
+        return square_coord in self.squares
+
 
 def find_matches(board):
     """
