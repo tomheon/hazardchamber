@@ -11,6 +11,9 @@ Further to keeping it dumb, any special behaviors (e.g. upon countdown) are
 expressed as callbacks.
 """
 
+import copy
+import random
+
 
 class EmptyTile(object):
 
@@ -20,10 +23,14 @@ class EmptyTile(object):
     def matches(self, tile):
         return False
 
+    def is_empty(self):
+        return True
+
 
 class GameTile(object):
 
-    pass
+    def is_empty(self):
+        return False
 
 
 class ColoredTile(GameTile):
@@ -112,6 +119,26 @@ def _format_row(row):
     return "| %s |" % " | ".join([str(s) for s in row])
 
 
+NEW_TILES = [
+    lambda: ColoredTile('Y'),
+    lambda: ColoredTile('BL'),
+    lambda: ColoredTile('BK'),
+    lambda: ColoredTile('P'),
+    lambda: ColoredTile('R'),
+    lambda: ColoredTile('G'),
+    TeamupTile
+    ]
+
+
+def new_rand_tile():
+    """
+    Return a new random color or teamup tile.
+
+    TODO: adjust for actual game probs.
+    """
+    return random.choice(NEW_TILES)()
+
+
 class Board(object):
 
     def __init__(self, rows):
@@ -134,6 +161,15 @@ class Board(object):
             raise Exception("Bad col num: %s" % col)
 
         return self.rows[row][col]
+
+    def is_in_bounds(self, row, col):
+        return all(0 <= n < self.side for n in [row, col])
+
+    def set_at(self, row, col, tile):
+        self.rows[row][col] = tile
+
+    def copy(self):
+        return copy.deepcopy(self)
 
     @property
     def side(self):

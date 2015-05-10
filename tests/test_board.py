@@ -1,7 +1,7 @@
-from nose.tools import eq_
+from nose.tools import eq_, ok_
 
 from board import EmptyTile, ColoredTile, CriticalTile, TeamupTile, StrikeTile, \
-    AttackTile, ProtectTile, CountdownTile
+    AttackTile, ProtectTile, CountdownTile, new_rand_tile, Board
 
 YELLOW = ColoredTile('Y')
 YELLOW2 = ColoredTile('Y')
@@ -120,3 +120,77 @@ def _verify_tile_match(t1, t2, should_match):
 def test_tile_matches():
     for t1, t2, should_match in TILE_MATCH_TESTS:
         yield _verify_tile_match, t1, t2, should_match
+
+
+def test_new_rand_tile():
+    for _ in range(100):
+        yield _verify_legal_rand_tile, new_rand_tile()
+
+
+def _verify_legal_rand_tile(tile):
+    ok_(isinstance(tile, ColoredTile) or
+        isinstance(tile, TeamupTile))
+
+
+def test_is_in_bounds():
+    board = Board([[EmptyTile()] * 8] * 8)
+    for row in range(8):
+        for col in range(8):
+            yield _verify_is_in_bounds, board, row, col, True
+
+    out_of_bounds = [(-1, 0), (0, -1), (-1, -1),
+                     (8, 0), (0, 8), (8, 8),
+                     (9, 0), (0, 9), (9, 9)]
+
+    for (row, col) in out_of_bounds:
+        yield _verify_is_in_bounds, board, row, col, False
+
+
+def _verify_is_in_bounds(board, row, col, expected):
+    eq_(expected, board.is_in_bounds(row, col))
+
+
+def test_at():
+    board = Board([['A', 'B'], ['C', 'D']])
+    cases = [
+        ((0, 0), 'A'),
+        ((0, 1), 'B'),
+        ((1, 0), 'C'),
+        ((1, 1), 'D')
+        ]
+    for ((row, col), expected) in cases:
+        yield _verify_at, board, row, col, expected
+
+
+def _verify_at(board, row, col, expected):
+    eq_(expected, board.at(row, col))
+
+
+def test_set_at():
+    board = Board([['A', 'B'], ['C', 'D']])
+    ok_('M' != board.at(0, 1))
+    board.set_at(0, 1, 'M')
+    eq_('M', board.at(0, 1))
+
+
+class Modifiable(object):
+
+    def __init__(self, data):
+        self.data = data
+
+
+def test_copy_isolates_changes():
+    board = Board([[Modifiable('A'), Modifiable('B')],
+                   [Modifiable('C'), Modifiable('D')]])
+    eq_('A', board.at(0, 0).data)
+    new_board = board.copy()
+    eq_('A', board.at(0, 0).data)
+    for row in range(1):
+        for col in range(1):
+            eq_(board.at(row, col).data, new_board.at(row, col).data)
+    new_board.set_at(0, 0, Modifiable('M'))
+    eq_('M', new_board.at(0, 0).data)
+    eq_('A', board.at(0, 0).data)
+    new_board.at(0, 1).data = 'X'
+    eq_('X', new_board.at(0, 1).data)
+    eq_('B', board.at(0, 1).data)
