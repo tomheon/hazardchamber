@@ -58,3 +58,10 @@ def first_move_strat(game_state):
     if not moves:
         return None
     return moves[0]
+
+
+def no_move_strat(game_state):
+    """
+    Refuse to move, a la 3 minion teams.
+    """
+    return None
