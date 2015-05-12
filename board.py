@@ -197,3 +197,21 @@ class Board(object):
         for row in reversed(range(self.side)):
             for col in reversed(range(self.side)):
                 yield row, col
+
+
+def neighbors(row, col, side):
+    """
+    Return all legal neighbors for the square at `row`, `col` on a board of
+    side `side`, sorted.
+    """
+    n = []
+    if row + 1 < side:
+        n.append((row + 1, col))
+    if row > 0:
+        n.append((row - 1, col))
+    if col + 1 < side:
+        n.append((row, col + 1))
+    if col > 0:
+        n.append((row, col - 1))
+
+    return sorted(n)

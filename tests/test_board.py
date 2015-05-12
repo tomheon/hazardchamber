@@ -1,7 +1,7 @@
 from nose.tools import eq_, ok_
 
 from board import EmptyTile, ColoredTile, CriticalTile, TeamupTile, StrikeTile, \
-    AttackTile, ProtectTile, CountdownTile, new_rand_tile, Board
+    AttackTile, ProtectTile, CountdownTile, new_rand_tile, Board, neighbors
 
 YELLOW = ColoredTile('Y')
 YELLOW2 = ColoredTile('Y')
@@ -206,3 +206,27 @@ def test_swap():
     board = Board([[0, 1], [2, 3]])
     board.swap(0, 0, 1, 0)
     eq_(Board([[2, 1], [0, 3]]), board)
+
+
+def test_neighbors():
+    # (row, col, side, exp_neighbors)
+    cases = [
+        (0, 0, 3, [(0, 1), (1, 0)]),
+        (0, 1, 3, [(0, 0), (0, 2), (1, 1)]),
+        (0, 2, 3, [(0, 1), (1, 2)]),
+
+        (1, 0, 3, [(0, 0), (2, 0), (1, 1)]),
+        (1, 1, 3, [(0, 1), (1, 0), (1, 2), (2, 1)]),
+        (1, 2, 3, [(0, 2), (1, 1), (2, 2)]),
+
+        (2, 0, 3, [(1, 0), (2, 1)]),
+        (2, 1, 3, [(2, 0), (1, 1), (2, 2)]),
+        (2, 2, 3, [(2, 1), (1, 2)]),
+        ]
+
+    for row, col, side, expected in cases:
+        yield _verify_neighbors, row, col, side, expected
+
+
+def _verify_neighbors(row, col, side, expected):
+    eq_(sorted(expected), neighbors(row, col, side))

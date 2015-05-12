@@ -4,6 +4,7 @@ Various simple strategies.
 
 import random
 
+from board import neighbors
 from match import find_matches
 
 
@@ -24,8 +25,7 @@ def find_moves(board, stop_after=None):
     moves = []
 
     for (row, col) in board.squares_from_bottom_right():
-        neighbors = _neighbors(row, col, board.side)
-        for row_n, col_n in neighbors:
+        for row_n, col_n in neighbors(row, col, board.side):
             nb = board.copy()
             nb.swap(row, col, row_n, col_n)
             if find_matches(nb):
@@ -58,14 +58,3 @@ def first_move_strat(game_state):
     if not moves:
         return None
     return moves[0]
-
-
-def _neighbors(row, col, side):
-    if row + 1 < side:
-        yield (row + 1, col)
-    if row > 0:
-        yield (row - 1, col)
-    if col + 1 < side:
-        yield (row, col + 1)
-    if col > 0:
-        yield (row, col - 1)
