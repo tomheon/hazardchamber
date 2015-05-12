@@ -133,8 +133,6 @@ NEW_TILES = [
 def new_rand_tile():
     """
     Return a new random color or teamup tile.
-
-    TODO: adjust for actual game probs.
     """
     return random.choice(NEW_TILES)()
 
