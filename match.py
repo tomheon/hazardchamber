@@ -28,9 +28,6 @@ class Match(object):
     def __cmp__(self, other):
         return cmp(self.squares, other.squares)
 
-    def subsumes_match(self, other):
-        return set(self.squares) > set(other.squares)
-
     def __contains__(self, square_coord):
         return square_coord in self.squares
 
@@ -74,6 +71,17 @@ class Match(object):
         return dict(rows=rows_max_extents,
                     cols=cols_max_extents)
 
+    def combine(self, other):
+        """
+        Combine these two matches into one.
+
+        Overlapping squares will be deduped.
+
+        No checking is performed around whether this combination makes sense
+        (e.g. whether there are any overlapping squares).
+        """
+        return Match(list(set(self.squares + other.squares)))
+
 
 def _max_extents(squares, group_key, extent_key):
     squares.sort(key=group_key)
@@ -92,18 +100,46 @@ def find_matches(board):
     """
     Returns a sorted list of unique Match objects, one per 3-or-more match.
 
-    Only the largest matches are returned in each case (e.g. the two 3 matches
-    that make up a 4 match will not be returned, only the 4 match).
-
     If there are no matches, returns an empty list.
     """
     matches = set()
     for row in range(board.side):
         for col in range(board.side):
             matches.update(set(find_matches_at(row, col, board)))
-    return sorted([m for m
-                   in matches
-                   if not any(o.subsumes_match(m) for o in matches)])
+
+    matches_l = list(matches)
+    length = len(matches_l)
+    i = 0
+    while i < length:
+        if matches_l[i] is None:
+            i += 1
+            continue
+        combined = False
+        for j in range(i, length):
+            if i == j:
+                continue
+            m1 = matches_l[i]
+            m2 = matches_l[j]
+            if m2 is None:
+                continue
+            if _should_combine(m1, m2, board):
+                matches_l[i] = m1.combine(m2)
+                matches_l[j] = None
+                combined = True
+        if not combined:
+            i += 1
+
+    return sorted(set([m for m in matches_l if m is not None]))
+
+
+def _should_combine(m1, m2, board):
+    if not (set(m1.squares) & set(m2.squares)):
+        return False
+    for s1 in m1.squares:
+        for s2 in m2.squares:
+            if not board.at(s1[0], s1[1]).matches(board.at(s2[0], s2[1])):
+                return False
+    return True
 
 
 def find_matches_at(row, col, board):

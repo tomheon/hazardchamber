@@ -11,6 +11,8 @@ FOUR_SIDE_PARSER = create_board_parser(side=4)
 
 FIVE_SIDE_PARSER = create_board_parser(side=5)
 
+EIGHT_SIDE_PARSER = create_board_parser(side=8)
+
 
 def _m(args, row, col):
     if args is None:
@@ -180,25 +182,6 @@ def test_critical_as_second_match_tile():
     eq_(None, find_right_match_at(0, 0, board))
 
 
-def test_match_subsumes():
-    cases = [
-        ([], [], False),
-        ([(0, 1)], [(0, 1)], False),
-        ([(0, 1)], [], True),
-        ([(0, 1), (0, 2)], [(0, 1)], True),
-        ([(0, 1), (0, 2)], [(0, 2)], True),
-        ([], [(0, 1)], False),
-        ([(0, 1)], [(0, 1), (0, 2)], False),
-        ([(0, 2)], [(0, 1), (0, 2)], False),
-        ]
-    for (a, b, subsumes) in cases:
-        yield _verify_match_subsumes, a, b, subsumes
-
-
-def _verify_match_subsumes(a, b, subsumes):
-    eq_(subsumes, Match(a).subsumes_match(Match(b)))
-
-
 def test_square_in_match():
     cases = [
         ([], (0, 0), False),
@@ -225,10 +208,44 @@ FIND_MATCHES_CASES = [
             | Y | R | R | R |
             """),
      FOUR_SIDE_PARSER,
-     [RIGHT(3)(0, 0),
-      DOWN(4)(0, 0),
-      DOWN(3)(0, 1),
+     [RIGHT(3)(0, 0).combine(DOWN(4)(0, 0)).combine(DOWN(3)(0, 1)),
       RIGHT(3)(3, 1)]),
+
+    (dedent("""\
+            | Y | Y | Y | Y |
+            | G | G | E | E |
+            | Y | Y | E | E |
+            | Y | R | R | G |
+            """),
+     FOUR_SIDE_PARSER,
+     [RIGHT(4)(0, 0)]),
+
+    (dedent("""\
+            | Y | Y | Y | G |
+            | G | Y | E | E |
+            | Y | Y | E | E |
+            | Y | R | R | G |
+            """),
+     FOUR_SIDE_PARSER,
+     [RIGHT(3)(0, 0).combine(DOWN(3)(0, 1))]),
+
+    (dedent("""\
+            | Y | Y | Y | Y |
+            | G | Y | E | E |
+            | Y | Y | E | E |
+            | Y | R | R | G |
+            """),
+     FOUR_SIDE_PARSER,
+     [RIGHT(4)(0, 0).combine(DOWN(3)(0, 1))]),
+
+    (dedent("""\
+            | Y | Y | Y | Y |
+            | G | Y | E | E |
+            | Y | Y | E | E |
+            | Y | Y | Y | G |
+            """),
+     FOUR_SIDE_PARSER,
+     [RIGHT(4)(0, 0).combine(DOWN(4)(0, 1)).combine(RIGHT(3)(3, 0))]),
 
     (dedent("""\
             | Y | Y | Y | T | R |
@@ -239,12 +256,11 @@ FIND_MATCHES_CASES = [
             """),
      FIVE_SIDE_PARSER,
      [RIGHT(3)(0, 0),
-      RIGHT(5)(1, 0),
       RIGHT(3)(2, 0),
-      RIGHT(3)(3, 1),
-      DOWN(3)(1, 2),
-      DOWN(3)(2, 4)
-      ]),
+      (RIGHT(5)(1,
+                0).combine(RIGHT(3)(3,
+                                    1)).combine(DOWN(3)(1, 2))),
+      DOWN(3)(2, 4)]),
 
     (dedent("""\
             | Y | Y | R | G |
@@ -262,15 +278,7 @@ FIND_MATCHES_CASES = [
             | C | C | C | C |
             """),
      FOUR_SIDE_PARSER,
-     [RIGHT(4)(0, 0),
-      RIGHT(4)(1, 0),
-      RIGHT(4)(2, 0),
-      RIGHT(4)(3, 0),
-      DOWN(4)(0, 0),
-      DOWN(4)(0, 1),
-      DOWN(4)(0, 2),
-      DOWN(4)(0, 3)
-      ]),
+     [Match([(row, col) for row in range(4) for col in range(4)])]),
 
     (dedent("""\
             | Y | Y | Y | Y |
@@ -279,15 +287,36 @@ FIND_MATCHES_CASES = [
             | Y | Y | Y | Y |
             """),
      FOUR_SIDE_PARSER,
-     [RIGHT(4)(0, 0),
-      RIGHT(4)(1, 0),
-      RIGHT(4)(2, 0),
-      RIGHT(4)(3, 0),
-      DOWN(4)(0, 0),
-      DOWN(4)(0, 1),
-      DOWN(4)(0, 2),
-      DOWN(4)(0, 3)
-      ]),
+     [Match([(row, col) for row in range(4) for col in range(4)])]),
+
+    # make sure our matching alg doesn't perform badly in worst case
+    (dedent("""\
+            | Y | Y | Y | Y | Y | Y | Y | Y |
+            | Y | Y | Y | Y | Y | Y | Y | Y |
+            | Y | Y | Y | Y | Y | Y | Y | Y |
+            | Y | Y | Y | Y | Y | Y | Y | Y |
+            | Y | Y | Y | Y | Y | Y | Y | Y |
+            | Y | Y | Y | Y | Y | Y | Y | Y |
+            | Y | Y | Y | Y | Y | Y | Y | Y |
+            | Y | Y | Y | Y | Y | Y | Y | Y |
+            """),
+     EIGHT_SIDE_PARSER,
+     [Match([(row, col) for row in range(8) for col in range(8)])]),
+
+    # make sure our matching alg doesn't perform badly in worst case with
+    # criticals, either
+    (dedent("""\
+            | C | C | C | C | C | C | C | C |
+            | C | C | C | C | C | C | C | C |
+            | C | C | C | C | C | C | C | C |
+            | C | C | C | C | C | C | C | C |
+            | C | C | C | C | C | C | C | C |
+            | C | C | C | C | C | C | C | C |
+            | C | C | C | C | C | C | C | C |
+            | C | C | C | C | C | C | C | C |
+            """),
+     EIGHT_SIDE_PARSER,
+     [Match([(row, col) for row in range(8) for col in range(8)])]),
 
     (dedent("""\
             | Y | Y | R | G |
@@ -298,6 +327,29 @@ FIND_MATCHES_CASES = [
      FOUR_SIDE_PARSER,
      [RIGHT(3)(1, 0),
       RIGHT(3)(1, 1)]),
+
+    # cross 5 match
+    (dedent("""\
+            | Y | G | Y | T | R |
+            | R | G | R | G | R |
+            | Y | R | R | R | T |
+            | Y | Y | R | Y | G |
+            | T | R | T | R | T |
+            """),
+     FIVE_SIDE_PARSER,
+     [Match([(1, 2), (2, 1), (2, 2), (2, 3), (3, 2)])]),
+
+    # T 5 match
+    (dedent("""\
+            | Y | G | Y | T | R |
+            | R | G | Y | G | R |
+            | Y | R | R | R | T |
+            | Y | Y | R | Y | G |
+            | T | T | R | T | T |
+            """),
+     FIVE_SIDE_PARSER,
+     [Match([(2, 1), (2, 2), (2, 3), (3, 2), (4, 2)])]),
+
     ]
 
 
@@ -342,3 +394,19 @@ def test_max_extents():
 def _verify_max_extent(match_args, row_extents, col_extents):
     eq_(dict(rows=row_extents, cols=col_extents),
         Match(match_args).max_extents)
+
+
+def test_combine():
+    cases = [
+        ([], [], []),
+        ([(0, 0)], [], [(0, 0)]),
+        ([(0, 0)], [(0, 1)], [(0, 0), (0, 1)]),
+        ([(0, 0)], [(0, 0), (0, 1)], [(0, 0), (0, 1)]),
+        ]
+    for m1, m2, expected in cases:
+        yield _verify_combine, m1, m2, expected
+        yield _verify_combine, m2, m1, expected
+
+
+def _verify_combine(m1, m2, expected):
+    eq_(Match(expected), Match(m1).combine(Match(m2)))
