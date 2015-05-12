@@ -309,3 +309,36 @@ def test_find_matches():
 
 def _verify_find_matches(board, expected):
     eq_(sorted(expected), find_matches(board))
+
+
+def test_count_tiles_in_match():
+    cases = [
+        ([], 0),
+        ([(0, 0)], 1),
+        ([(0, 0), (0, 1), (0, 2)], 3)
+        ]
+
+    for (squares, expected) in cases:
+        yield _verify_count_tiles_in_match, squares, expected
+
+
+def _verify_count_tiles_in_match(squares, expected):
+    eq_(expected, Match(squares).tile_count)
+
+
+def test_max_extents():
+    cases = [
+        ([(0, 1), (0, 2), (0, 3)], {0: 3}, {}),
+        ([(1, 1), (2, 1), (3, 1)], {}, {1: 3}),
+        ([(0, 0), (1, 0), (2, 0), (3, 0)], {}, {0: 4}),
+        ([(0, 2), (1, 1), (1, 2), (1, 3), (2, 2)],
+         {1: 3}, {2: 3})
+        ]
+
+    for match_args, row_extents, col_extents in cases:
+        _verify_max_extent, match_args, row_extents, col_extents
+
+
+def _verify_max_extent(match_args, row_extents, col_extents):
+    eq_(dict(rows=row_extents, cols=col_extents),
+        Match(match_args).max_extents)

@@ -2,6 +2,7 @@
 Utilities for finding matches in a board.
 """
 
+import itertools
 import operator
 
 from constants import MIN_MATCH
@@ -32,6 +33,59 @@ class Match(object):
 
     def __contains__(self, square_coord):
         return square_coord in self.squares
+
+    @property
+    def tile_count(self):
+        return len(self.squares)
+
+    @property
+    def max_extents(self):
+        """
+        Returns a dict of the form:
+
+        {
+          'rows': { <row>: <extent>, <row>: <extent> },
+          'cols': { <col>: <extent>, <col>: <extent> }
+        }
+
+        Where `extent` is the max number of contiguous tiles matches in that
+        row or col.
+        """
+        squares = list(self.squares)
+
+        _row = lambda s: s[0]
+        _col = lambda s: s[1]
+
+        rows_max_extents = {
+            row: max_extent
+            for row, max_extent
+            in _max_extents(squares,
+                            _row,
+                            _col)
+            if max_extent >= MIN_MATCH}
+        cols_max_extents = {
+            col: max_extent
+            for col, max_extent
+            in _max_extents(squares,
+                            _col,
+                            _row)
+            if max_extent >= MIN_MATCH}
+
+        return dict(rows=rows_max_extents,
+                    cols=cols_max_extents)
+
+
+def _max_extents(squares, group_key, extent_key):
+    squares.sort(key=group_key)
+    for g_key, g_squares in itertools.groupby(squares, group_key):
+        exts = [extent_key(s) for s in g_squares]
+        exts.sort()
+        # shamelessly adapted from the python itertools recipes
+        _ind_minus_elem = lambda (i, x): i - x
+        yield (g_key,
+               max([len(list(adj))
+                    for (_, adj)
+                    in itertools.groupby(enumerate(exts), _ind_minus_elem)]))
 
 
 def find_matches(board):
