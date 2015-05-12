@@ -5,6 +5,7 @@ from nose.tools import eq_
 from parse import create_board_parser, parse_board
 from match import find_matches, find_matches_at, find_left_match_at, \
     find_right_match_at, find_up_match_at, find_down_match_at, Match
+from tutils import right_match, left_match, down_match, up_match
 
 
 FOUR_SIDE_PARSER = create_board_parser(side=4)
@@ -22,30 +23,6 @@ def _m(args, row, col):
     return args(row, col)
 
 
-def LEFT(num_squares):
-    def _left(row, col):
-        return Match([(row, col - i) for i in range(num_squares)])
-    return _left
-
-
-def RIGHT(num_squares):
-    def _right(row, col):
-        return Match([(row, col + i) for i in range(num_squares)])
-    return _right
-
-
-def DOWN(num_squares):
-    def _down(row, col):
-        return Match([(row + i, col) for i in range(num_squares)])
-    return _down
-
-
-def UP(num_squares):
-    def _up(row, col):
-        return Match([(row - i, col) for i in range(num_squares)])
-    return _up
-
-
 def test_find_left_match_at():
     board_s = dedent("""\
                      | Y | Y | Y | Y |
@@ -56,9 +33,9 @@ def test_find_left_match_at():
     board = parse_board(board_s, FOUR_SIDE_PARSER)
 
     expected = [
-        [None, None, LEFT(3), LEFT(4)],
-        [None, None, LEFT(3), None],
-        [None, None, None, LEFT(3)],
+        [None, None, left_match(3), left_match(4)],
+        [None, None, left_match(3), None],
+        [None, None, None, left_match(3)],
         [None, None, None, None],
         ]
     for row in range(board.side):
@@ -78,9 +55,9 @@ def test_find_right_match_at():
     board = parse_board(board_s, FOUR_SIDE_PARSER)
 
     expected = [
-        [RIGHT(4), RIGHT(3), None, None],
-        [RIGHT(3), None, None, None],
-        [None, RIGHT(3), None, None],
+        [right_match(4), right_match(3), None, None],
+        [right_match(3), None, None, None],
+        [None, right_match(3), None, None],
         [None, None, None, None],
         ]
     for row in range(board.side):
@@ -100,8 +77,8 @@ def test_find_down_match_at():
     board = parse_board(board_s, FOUR_SIDE_PARSER)
 
     expected = [
-        [DOWN(4), None, DOWN(3), None],
-        [DOWN(3), DOWN(3), None, None],
+        [down_match(4), None, down_match(3), None],
+        [down_match(3), down_match(3), None, None],
         [None, None, None, None],
         [None, None, None, None],
         ]
@@ -124,8 +101,8 @@ def test_find_up_match_at():
     expected = [
         [None, None, None, None],
         [None, None, None, None],
-        [UP(3), None, UP(3), None],
-        [UP(4), UP(3), None, None],
+        [up_match(3), None, up_match(3), None],
+        [up_match(4), up_match(3), None, None],
         ]
     for row in range(board.side):
         for col in range(board.side):
@@ -144,10 +121,11 @@ def test_find_matches_at():
     board = parse_board(board_s, FOUR_SIDE_PARSER)
 
     expected = [
-        [[DOWN(4), RIGHT(3)], [DOWN(3)], [LEFT(3)], []],
-        [[DOWN(3)], [], [], []],
-        [[UP(3)], [UP(3)], [], []],
-        [[UP(4)], [RIGHT(3)], [], [LEFT(3)]],
+        [[down_match(4), right_match(3)],
+         [down_match(3)], [left_match(3)], []],
+        [[down_match(3)], [], [], []],
+        [[up_match(3)], [up_match(3)], [], []],
+        [[up_match(4)], [right_match(3)], [], [left_match(3)]],
         ]
     for row in range(board.side):
         for col in range(board.side):
@@ -208,8 +186,11 @@ FIND_MATCHES_CASES = [
             | Y | R | R | R |
             """),
      FOUR_SIDE_PARSER,
-     [RIGHT(3)(0, 0).combine(DOWN(4)(0, 0)).combine(DOWN(3)(0, 1)),
-      RIGHT(3)(3, 1)]),
+     [right_match(3)(0,
+                     0).combine(down_match(4)(0,
+                                              0)).combine(down_match(3)(0,
+                                                                        1)),
+      right_match(3)(3, 1)]),
 
     (dedent("""\
             | Y | Y | Y | Y |
@@ -218,7 +199,7 @@ FIND_MATCHES_CASES = [
             | Y | R | R | G |
             """),
      FOUR_SIDE_PARSER,
-     [RIGHT(4)(0, 0)]),
+     [right_match(4)(0, 0)]),
 
     (dedent("""\
             | Y | Y | Y | G |
@@ -227,7 +208,7 @@ FIND_MATCHES_CASES = [
             | Y | R | R | G |
             """),
      FOUR_SIDE_PARSER,
-     [RIGHT(3)(0, 0).combine(DOWN(3)(0, 1))]),
+     [right_match(3)(0, 0).combine(down_match(3)(0, 1))]),
 
     (dedent("""\
             | Y | Y | Y | Y |
@@ -236,7 +217,7 @@ FIND_MATCHES_CASES = [
             | Y | R | R | G |
             """),
      FOUR_SIDE_PARSER,
-     [RIGHT(4)(0, 0).combine(DOWN(3)(0, 1))]),
+     [right_match(4)(0, 0).combine(down_match(3)(0, 1))]),
 
     (dedent("""\
             | Y | Y | Y | Y |
@@ -245,7 +226,10 @@ FIND_MATCHES_CASES = [
             | Y | Y | Y | G |
             """),
      FOUR_SIDE_PARSER,
-     [RIGHT(4)(0, 0).combine(DOWN(4)(0, 1)).combine(RIGHT(3)(3, 0))]),
+     [right_match(4)(0,
+                     0).combine(down_match(4)(0,
+                                              1)).combine(right_match(3)(3,
+                                                                         0))]),
 
     (dedent("""\
             | Y | Y | Y | T | R |
@@ -255,12 +239,11 @@ FIND_MATCHES_CASES = [
             | T | R | T | R | T |
             """),
      FIVE_SIDE_PARSER,
-     [RIGHT(3)(0, 0),
-      RIGHT(3)(2, 0),
-      (RIGHT(5)(1,
-                0).combine(RIGHT(3)(3,
-                                    1)).combine(DOWN(3)(1, 2))),
-      DOWN(3)(2, 4)]),
+     [right_match(3)(0, 0),
+      right_match(3)(2, 0),
+      right_match(5)(1, 0).combine(right_match(3)(
+          3, 1)).combine(down_match(3)(1, 2)),
+      down_match(3)(2, 4)]),
 
     (dedent("""\
             | Y | Y | R | G |
@@ -325,8 +308,8 @@ FIND_MATCHES_CASES = [
             | Y | R | Y | R |
             """),
      FOUR_SIDE_PARSER,
-     [RIGHT(3)(1, 0),
-      RIGHT(3)(1, 1)]),
+     [right_match(3)(1, 0),
+      right_match(3)(1, 1)]),
 
     # cross 5 match
     (dedent("""\

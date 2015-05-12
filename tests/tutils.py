@@ -3,6 +3,7 @@ import random
 from board import EmptyTile, ColoredTile, CriticalTile, TeamupTile, StrikeTile, \
     AttackTile, ProtectTile, CountdownTile, Board
 from constants import BOARD_SIDE
+from match import Match
 
 
 def _rand_color():
@@ -58,3 +59,27 @@ def random_midgame_board_s():
     Note: not guaranteed stable, may contain strike tiles etc.
     """
     return str(random_midgame_board())
+
+
+def left_match(num_squares):
+    def _left(row, col):
+        return Match([(row, col - i) for i in range(num_squares)])
+    return _left
+
+
+def right_match(num_squares):
+    def _right(row, col):
+        return Match([(row, col + i) for i in range(num_squares)])
+    return _right
+
+
+def down_match(num_squares):
+    def _down(row, col):
+        return Match([(row + i, col) for i in range(num_squares)])
+    return _down
+
+
+def up_match(num_squares):
+    def _up(row, col):
+        return Match([(row - i, col) for i in range(num_squares)])
+    return _up
