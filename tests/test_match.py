@@ -410,3 +410,21 @@ def test_combine():
 
 def _verify_combine(m1, m2, expected):
     eq_(Match(expected), Match(m1).combine(Match(m2)))
+
+
+def test_has_extent_at_least():
+    cases = [
+        ([(0, 1), (0, 2), (0, 3)], 3),
+        ([(0, 0), (1, 0), (2, 0), (3, 0)], 4),
+        ([(0, 2), (1, 0), (1, 1), (1, 2), (1, 3), (2, 2)], 4)
+        ]
+
+    for match_args, max_extent in cases:
+        for ext in range(max_extent):
+            yield _verify_has_extent_at_least, match_args, ext, True
+        yield _verify_has_extent_at_least, match_args, max_extent, True
+        yield _verify_has_extent_at_least, match_args, max_extent + 1, False
+
+
+def _verify_has_extent_at_least(match_args, extent, expected):
+    eq_(expected, Match(match_args).has_extent_at_least(extent))

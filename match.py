@@ -35,6 +35,12 @@ class Match(object):
     def tile_count(self):
         return len(self.squares)
 
+    def has_extent_at_least(self, ext):
+        extents = self.max_extents
+        return (any(v >= ext
+                    for v
+                    in extents['rows'].values() + extents['cols'].values()))
+
     @property
     def max_extents(self):
         """
