@@ -26,7 +26,8 @@ GameState = namedtuple('GameState',
 
 class Game(object):
 
-    def __init__(self, board, offense, defense, stop_condition):
+    def __init__(self, board, offense, defense, stop_condition,
+                 pre_move=None):
         """
         - `board`: a Board object containing the initial position
 
@@ -36,6 +37,9 @@ class Game(object):
 
         - `stop_condition`: a callable(GameState) which will be called after
           each move.  The game will end if it returns True.
+
+        - `pre_move`: a callable(GameState) that will be invoked before each
+          move.
         """
         self.board = board
         self.offense = offense
@@ -45,9 +49,12 @@ class Game(object):
         self.stop_condition = stop_condition
         self.move_count = 0
         self.turn_count = 1
+        self.pre_move = pre_move
 
     def play(self):
         while not self.stop_condition(self._game_state()):
+            if self.pre_move:
+                self.pre_move(self._game_state())
             self.move()
 
     def move(self):
