@@ -31,7 +31,7 @@ def find_moves(board):
     return sorted(moves)
 
 
-def rand_move(game_state):
+def rand_move_strat(game_state):
     """
     Pick a random available move.
 
@@ -43,7 +43,7 @@ def rand_move(game_state):
     return random.choice(moves)
 
 
-def first_move(game_state):
+def first_move_strat(game_state):
     """
     Pick the first available move,
 
