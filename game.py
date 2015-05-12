@@ -5,8 +5,9 @@ The game itself, with turns and back and forth and all that.
 from collections import namedtuple
 from itertools import cycle
 
-from board import new_rand_tile
-from constants import MIN_MOVE_AGAIN
+from board import new_rand_tile, CriticalTile
+from criticals import calc_critical_square
+from constants import MIN_MOVE_AGAIN, MIN_CREATE_CRITICAL
 from gravity import apply_gravity
 from match import find_matches
 from tile_destroyer import destroy_tiles
@@ -64,6 +65,7 @@ class Game(object):
                     break
                 matched_five = matched_five or _has_five_match(matches)
                 self._destroy_tiles()
+                self._place_criticals(matches)
                 self._apply_gravity()
                 self._fill_empty_squares()
 
@@ -84,6 +86,12 @@ class Game(object):
                 self.to_move == self.defense)
 
         self.board = new_board
+
+    def _place_criticals(self, matches):
+        for match in matches:
+            if match.has_extent_at_least(MIN_CREATE_CRITICAL):
+                row, col = calc_critical_square(match)
+                self.board.set_at(row, col, CriticalTile())
 
     def _apply_gravity(self):
         new_board, tiles_moved = apply_gravity(self.board)
