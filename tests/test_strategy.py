@@ -58,12 +58,20 @@ def test_find_moves():
     for board_s, parser, exp_moves_non_sym in FIND_MOVES_CASES:
         board = parse_board(board_s, parser)
         yield _verify_find_moves, board, exp_moves_non_sym
+        for num_moves in range(1, (len(exp_moves_non_sym) * 2) + 1):
+            yield (_verify_find_moves_with_stop, board, exp_moves_non_sym,
+                   num_moves)
 
 
 def _verify_find_moves(board, exp_moves_non_sym):
     moves = find_moves(board)
     exp_moves = exp_moves_non_sym + [(b, a) for a, b in exp_moves_non_sym]
     eq_(sorted(exp_moves), moves)
+
+
+def _verify_find_moves_with_stop(board, exp_moves_non_sym, num_moves):
+    moves = find_moves(board, stop_after=num_moves)
+    eq_(num_moves, len(moves))
 
 
 def test_rand_move_strat():

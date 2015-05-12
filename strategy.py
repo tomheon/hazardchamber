@@ -7,16 +7,19 @@ import random
 from match import find_matches
 
 
-def find_moves(board):
+def find_moves(board, stop_after=None):
     """
     Return all legal swap moves on the board as a sorted list of:
 
     [((row1, col1), (row2, col2)), ...]
 
-    Note that for each ((row1, col1), (row2, col2)) tuple, there will be a
-    corresponding ((row2, col2), (row1, col1)) tuple, as tiles can be swapped
-    with either one being the 'touched' tile (by convention, that being the
-    first listed in the tuple).
+    Note that normally for each ((row1, col1), (row2, col2)) tuple, there will
+    be a corresponding ((row2, col2), (row1, col1)) tuple, as tiles can be
+    swapped with either one being the 'touched' tile (by convention, that being
+    the first listed in the tuple).  This is not always the case if passing
+    `stop_after.`
+
+    If `stop_after` is supplied, stop after that many moves are found.
     """
     moves = []
 
@@ -27,6 +30,8 @@ def find_moves(board):
             nb.swap(row, col, row_n, col_n)
             if find_matches(nb):
                 moves.append(((row, col), (row_n, col_n)))
+            if stop_after is not None and len(moves) >= stop_after:
+                return sorted(moves)
 
     return sorted(moves)
 
