@@ -116,7 +116,7 @@ class CountdownTile(ColoredTile):
 
 
 def _format_row(row):
-    return "| %s |" % " | ".join([str(s) for s in row])
+    return "| %s |" % " | ".join([str(s).ljust(3, ' ') for s in row])
 
 
 NEW_TILES = [
