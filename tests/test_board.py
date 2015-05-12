@@ -114,12 +114,12 @@ TILE_MATCH_TESTS = [
 
 def _verify_tile_match(t1, t2, should_match):
     eq_(should_match, t1.matches(t2))
-    eq_(should_match, t2.matches(t1))
 
 
 def test_tile_matches():
     for t1, t2, should_match in TILE_MATCH_TESTS:
         yield _verify_tile_match, t1, t2, should_match
+        yield _verify_tile_match, t2, t1, should_match
 
 
 def test_new_rand_tile():
