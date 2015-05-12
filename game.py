@@ -69,10 +69,10 @@ class Game(object):
                 self._apply_gravity()
                 self._fill_empty_squares()
 
-            if not matched_five:
-                self.to_move = next(self.players)
-                if self.to_move == self.offense:
-                    self.turn_count += 1
+        if not matched_five:
+            self.to_move = next(self.players)
+            if self.to_move == self.offense:
+                self.turn_count += 1
 
     def _destroy_tiles(self):
         new_board, destroyed_squares = destroy_tiles(self.board)
