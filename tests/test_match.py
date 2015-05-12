@@ -388,7 +388,7 @@ def test_max_extents():
         ]
 
     for match_args, row_extents, col_extents in cases:
-        _verify_max_extent, match_args, row_extents, col_extents
+        yield _verify_max_extent, match_args, row_extents, col_extents
 
 
 def _verify_max_extent(match_args, row_extents, col_extents):
