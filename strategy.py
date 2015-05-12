@@ -32,10 +32,27 @@ def find_moves(board):
 
 
 def rand_move(game_state):
+    """
+    Pick a random available move.
+
+    Returns None if no moves are available.
+    """
     moves = find_moves(game_state.board)
     if not moves:
         return None
-    return random.choice(list(moves))
+    return random.choice(moves)
+
+
+def first_move(game_state):
+    """
+    Pick the first available move,
+
+    Returns None if no moves are available.
+    """
+    moves = find_moves(game_state.board)
+    if not moves:
+        return None
+    return moves[0]
 
 
 def _neighbors(row, col, side):
