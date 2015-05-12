@@ -1,2 +1,0 @@
-* TODO crit tiles, support them & add to game
-* TODO find out how game actually handles stuck pos and do it
