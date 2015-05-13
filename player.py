@@ -6,11 +6,14 @@ Eventually this will also embed teams, etc.
 For the moment, it just holds a move strategy.
 """
 
+from collections import defaultdict
+
 
 class Player(object):
 
     def __init__(self, strategy):
         self.strategy = strategy
+        self.cur_ap = defaultdict(int)
 
     def pick_move(self, game_state):
         """
@@ -29,7 +32,7 @@ class Player(object):
         """
         return self.strategy(game_state)
 
-    def update_destroyed_tile(self, row, col, destroyed_by_self):
+    def update_destroyed_tile(self, row, col, board, destroyed_by_self):
         """
         Called (by the game or a player) when a tile is destroyed.
 
@@ -38,7 +41,10 @@ class Player(object):
         TODO: need to work AP in eventually for abilities that do / don't
         generate.
         """
-        pass
+        if destroyed_by_self:
+            ap = board.at(row, col).ap()
+            if ap:
+                self.cur_ap[ap[0]] += ap[1]
 
     def update_tile_position(self, old_row, old_col, new_row, new_col):
         """
@@ -51,3 +57,7 @@ class Player(object):
         Called when two tiles are swapped.
         """
         pass
+
+    @property
+    def ap(self):
+        return dict(self.cur_ap)

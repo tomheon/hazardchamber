@@ -86,10 +86,10 @@ class Game(object):
 
         for row, col in destroyed_squares:
             self.offense.update_destroyed_tile(
-                row, col,
+                row, col, self.board,
                 self.to_move == self.offense)
             self.defense.update_destroyed_tile(
-                row, col,
+                row, col, self.board,
                 self.to_move == self.defense)
 
         self.board = new_board

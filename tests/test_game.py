@@ -46,9 +46,9 @@ def _allow_one_move():
 class TestPlayer(Player):
 
     def __init__(self, strategy):
-        self.strategy = strategy
         self.moves = 0
         self.reset_calls()
+        Player.__init__(self, strategy)
 
     def reset_calls(self):
         self.update_destroyed_tile_calls = []
@@ -59,8 +59,10 @@ class TestPlayer(Player):
         self.moves += 1
         return Player.pick_move(self, game_state)
 
-    def update_destroyed_tile(self, row, col, destroyed_by_self):
+    def update_destroyed_tile(self, row, col, board, destroyed_by_self):
+        # ignoring the board for the moment
         self.update_destroyed_tile_calls.append((row, col, destroyed_by_self))
+        Player.update_destroyed_tile(self, row, col, board, destroyed_by_self)
 
     def update_tiles_swapped(self, row_a, col_a, row_b, col_b):
         self.update_tiles_swapped_calls.append((row_a, col_a, row_b, col_b))
@@ -110,6 +112,8 @@ def test_one_turn_game():
              (2, 1, False),
              (3, 1, False)],
             defense.update_destroyed_tile_calls)
+        eq_(dict(G=3), offense.ap)
+        eq_(dict(), defense.ap)
 
         eq_(re.sub('\s', '',
                    dedent("""\
@@ -146,6 +150,8 @@ def test_one_turn_game():
              (1, 0, True),
              (2, 0, True)],
             defense.update_destroyed_tile_calls)
+        eq_(dict(G=3), offense.ap)
+        eq_(dict(Y=3), defense.ap)
 
         eq_(re.sub('\s', '',
                    dedent("""\
