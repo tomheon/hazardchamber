@@ -37,6 +37,32 @@ CRITICAL2 = CriticalTile()
 TEAMUP = TeamupTile()
 TEAMUP2 = TeamupTile()
 
+
+AP_CASES = [
+    (YELLOW, ('Y', 1)),
+    (RED, ('R', 1)),
+    (YELLOW_STRIKE_123_OFFENSE, ('Y', 1)),
+    (RED_STRIKE_123_OFFENSE, ('R', 1)),
+    (YELLOW_ATTACK_123_OFFENSE, ('Y', 1)),
+    (RED_ATTACK_123_OFFENSE, ('R', 1)),
+    (YELLOW_PROTECT_123_OFFENSE, ('Y', 1)),
+    (RED_PROTECT_123_OFFENSE, ('R', 1)),
+    (YELLOW_COUNTDOWN_5, ('Y', 1)),
+    (RED_COUNTDOWN_5, ('R', 1)),
+    (TEAMUP, ('T', 1)),
+    (CRITICAL, None)
+    ]
+
+
+def test_ap():
+    for (tile, exp) in AP_CASES:
+        yield _verify_ap, tile, exp
+
+
+def _verify_ap(tile, exp):
+    eq_(exp, tile.ap())
+
+
 # (t1, t2, should_match)
 TILE_MATCH_TESTS = [
     # basic colors

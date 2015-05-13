@@ -38,6 +38,9 @@ class EmptyTile(object):
     def is_teamup(self):
         return False
 
+    def ap(self):
+        return None
+
 
 class GameTile(object):
 
@@ -56,6 +59,9 @@ class GameTile(object):
     def is_teamup(self):
         return False
 
+    def ap(self):
+        return None
+
 
 class ColoredTile(GameTile):
 
@@ -71,6 +77,9 @@ class ColoredTile(GameTile):
 
     def is_color(self):
         return True
+
+    def ap(self):
+        return (self.color, 1)
 
 
 class CriticalTile(GameTile):
@@ -95,6 +104,9 @@ class TeamupTile(GameTile):
 
     def is_teamup(self):
         return True
+
+    def ap(self):
+        return ('T', 1)
 
 
 class StrikeTile(ColoredTile):
