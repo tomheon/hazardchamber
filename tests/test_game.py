@@ -165,3 +165,85 @@ def test_one_turn_game():
         # be friendly to other downstream tests that actually want some
         # randomness
         random.setstate(rand_state)
+
+
+def test_ensure_playable_board():
+    rand_state = random.getstate()
+    try:
+        random.seed(100)
+        board_s = dedent("""\
+                         | Y | G | BL | P |
+                         | R | Y | BL | R |
+                         | G | P | BK | G |
+                         | Y | G | BK | P |
+                         """)
+        board = parse_board(board_s, FOUR_SIDE_PARSER)
+        offense = TestPlayer(strategy=first_move_strat)
+        defense = TestPlayer(strategy=first_move_strat)
+        game = Game(board=board,
+                    offense=offense,
+                    defense=defense,
+                    stop_condition=_allow_one_move())
+
+        game.play()
+        eq_(re.sub('\s', '',
+                   dedent("""\
+                          | P   | G   | G   | R   |
+                          | BK  | BK  | BL  | BL  |
+                          | R   | P   | G   | P   |
+                          | Y   | Y   | P   | Y   |
+                          """)),
+            re.sub('\s', '', unparse_board(game.board)))
+        expected_swaps = [(3, 3, 0, 0),
+                          (3, 2, 2, 2),
+                          (3, 1, 3, 2),
+                          (3, 0, 0, 1),
+                          (2, 3, 0, 3),
+                          (2, 2, 2, 0),
+                          (2, 1, 3, 0),
+                          (2, 0, 3, 3),
+                          (1, 3, 0, 2),
+                          (1, 2, 1, 0),
+                          (1, 1, 2, 3),
+                          (1, 0, 1, 3),
+                          (0, 3, 1, 2),
+                          (0, 2, 1, 1),
+                          (0, 1, 2, 1),
+                          (0, 0, 3, 1),
+                          (3, 3, 0, 0),
+                          (3, 2, 1, 1),
+                          (3, 1, 1, 3),
+                          (3, 0, 3, 3),
+                          (2, 3, 1, 0),
+                          (2, 2, 2, 2),
+                          (2, 1, 0, 1),
+                          (2, 0, 2, 0),
+                          (1, 3, 3, 2),
+                          (1, 2, 1, 2),
+                          (1, 1, 2, 1),
+                          (1, 0, 2, 3),
+                          (0, 3, 0, 2),
+                          (0, 2, 3, 1),
+                          (0, 1, 3, 0),
+                          (0, 0, 0, 3),
+                          (3, 3, 2, 1),
+                          (3, 2, 3, 2),
+                          (3, 1, 0, 3),
+                          (3, 0, 1, 3),
+                          (2, 3, 0, 0),
+                          (2, 2, 0, 1),
+                          (2, 1, 2, 3),
+                          (2, 0, 3, 0),
+                          (1, 3, 1, 0),
+                          (1, 2, 0, 2),
+                          (1, 1, 1, 2),
+                          (1, 0, 3, 1),
+                          (0, 3, 2, 0),
+                          (0, 2, 1, 1),
+                          (0, 1, 2, 2),
+                          (0, 0, 3, 3),
+                          (0, 0, 1, 0)]
+        eq_(expected_swaps, offense.update_tiles_swapped_calls)
+        eq_(expected_swaps, defense.update_tiles_swapped_calls)
+    finally:
+        random.setstate(rand_state)

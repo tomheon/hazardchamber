@@ -4,11 +4,13 @@ The game itself, with turns and back and forth and all that.
 
 from collections import namedtuple
 from itertools import cycle
+import random
 
 from criticals import calc_critical_square
 from constants import MIN_MOVE_AGAIN, MIN_CREATE_CRITICAL
 from gravity import apply_gravity
 from match import find_matches
+from strategy import find_moves
 from tile_destroyer import destroy_tiles
 from tiles import new_rand_tile, CriticalTile
 
@@ -53,6 +55,7 @@ class Game(object):
 
     def play(self):
         while not self.stop_condition(self._game_state()):
+            self._ensure_playable_board()
             if self.pre_move:
                 self.pre_move(self._game_state())
             self.move()
@@ -80,6 +83,24 @@ class Game(object):
             self.to_move = next(self.players)
             if self.to_move == self.offense:
                 self.turn_count += 1
+
+    def _ensure_playable_board(self):
+        while not (find_moves(self.board, stop_after=1)
+                   and not find_matches(self.board, stop_after=1)):
+            self._shuffle_board()
+
+    def _shuffle_board(self):
+        old_squares = list(self.board.squares_from_bottom_right())
+        new_squares = list(self.board.squares_from_bottom_right())
+        random.shuffle(new_squares)
+        for (old_sq, new_sq) in zip(old_squares, new_squares):
+            old_row, old_col = old_sq
+            new_row, new_col = new_sq
+            self.board.swap(old_row, old_col, new_row, new_col)
+            self.offense.update_tiles_swapped(old_row, old_col,
+                                              new_row, new_col)
+            self.defense.update_tiles_swapped(old_row, old_col,
+                                              new_row, new_col)
 
     def _destroy_tiles(self):
         new_board, destroyed_squares = destroy_tiles(self.board)
