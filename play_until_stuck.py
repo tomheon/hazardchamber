@@ -4,7 +4,6 @@ and print the number of moves until stuck board to stdout.
 """
 
 from argparse import ArgumentParser
-import hashlib
 import random
 import sys
 
@@ -15,12 +14,6 @@ from stable_board import rand_stable_board
 from strategy import no_move_strat, rand_move_strat, find_moves
 
 
-def _md5(board_s):
-    m = hashlib.md5()
-    m.update(board_s)
-    return m.hexdigest()
-
-
 def stop_when_stuck(game_state):
     return not find_moves(game_state.board, stop_after=1)
 
@@ -29,7 +22,7 @@ def print_board(game_state):
     print
     print >> sys.stderr, '***'
     print >> sys.stderr, unparse_board(game_state.board)
-    print >> sys.stderr, _md5(unparse_board(game_state.board))
+    print >> sys.stderr, game_state.board.md5()
     print >> sys.stderr, '***'
     print
 
