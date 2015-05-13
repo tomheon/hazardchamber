@@ -26,10 +26,34 @@ class EmptyTile(object):
     def is_empty(self):
         return True
 
+    def is_critical(self):
+        return False
+
+    def is_color(self):
+        return False
+
+    def is_game_tile(self):
+        return False
+
+    def is_teamup(self):
+        return False
+
 
 class GameTile(object):
 
     def is_empty(self):
+        return False
+
+    def is_critical(self):
+        return False
+
+    def is_color(self):
+        return False
+
+    def is_game_tile(self):
+        return True
+
+    def is_teamup(self):
         return False
 
 
@@ -42,10 +66,11 @@ class ColoredTile(GameTile):
         return self.color
 
     def matches(self, tile):
-        return (isinstance(tile, CriticalTile)
-                or
-                (isinstance(tile, ColoredTile)
-                 and tile.color == self.color))
+        return tile.is_critical() or (tile.is_color()
+                                      and tile.color == self.color)
+
+    def is_color(self):
+        return True
 
 
 class CriticalTile(GameTile):
@@ -54,7 +79,10 @@ class CriticalTile(GameTile):
         return "C"
 
     def matches(self, tile):
-        return isinstance(tile, GameTile)
+        return tile.is_game_tile()
+
+    def is_critical(self):
+        return True
 
 
 class TeamupTile(GameTile):
@@ -63,8 +91,10 @@ class TeamupTile(GameTile):
         return "T"
 
     def matches(self, tile):
-        return (isinstance(tile, TeamupTile) or
-                isinstance(tile, CriticalTile))
+        return tile.is_teamup() or tile.is_critical()
+
+    def is_teamup(self):
+        return True
 
 
 class StrikeTile(ColoredTile):
