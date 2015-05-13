@@ -5,6 +5,7 @@ Various simple strategies.
 import random
 
 from board import neighbors
+import board_aware_cache
 from match import find_matches
 
 
@@ -22,6 +23,10 @@ def find_moves(board, stop_after=None):
 
     If `stop_after` is supplied, stop after that many moves are found.
     """
+    cached = board_aware_cache.get('find_moves', board, stop_after)
+    if cached:
+        return cached
+
     moves = []
 
     for (row, col) in board.squares_from_bottom_right():
@@ -31,9 +36,14 @@ def find_moves(board, stop_after=None):
             if find_matches(nb):
                 moves.append(((row, col), (row_n, col_n)))
             if stop_after is not None and len(moves) >= stop_after:
-                return sorted(moves)
+                sorted_moves = sorted(moves)
+                board_aware_cache.set('find_moves', board, stop_after,
+                                      sorted_moves)
+                return sorted_moves
 
-    return sorted(moves)
+    sorted_moves = sorted(moves)
+    board_aware_cache.set('find_moves', board, None, sorted_moves)
+    return sorted_moves
 
 
 def rand_move_strat(game_state):

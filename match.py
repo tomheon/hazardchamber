@@ -5,6 +5,7 @@ Utilities for finding matches in a board.
 import itertools
 import operator
 
+import board_aware_cache
 from constants import MIN_MATCH
 
 
@@ -113,12 +114,19 @@ def find_matches(board, stop_after=None):
 
     If there are no matches, returns an empty list.
     """
+    cached = board_aware_cache.get('find_matches', board, stop_after)
+    if cached:
+        return cached
+
     matches = set()
     for row in range(board.side):
         for col in range(board.side):
             matches.update(set(find_matches_at(row, col, board)))
             if stop_after is not None and len(matches) >= stop_after:
-                return sorted(list(matches)[:stop_after])
+                sorted_matches = sorted(list(matches)[:stop_after])
+                board_aware_cache.set('find_matches', board, stop_after,
+                                      sorted_matches)
+                return sorted_matches
 
     matches_l = list(matches)
     length = len(matches_l)
@@ -142,7 +150,9 @@ def find_matches(board, stop_after=None):
         if not combined:
             i += 1
 
-    return sorted(set([m for m in matches_l if m is not None]))
+    sorted_matches = sorted(set([m for m in matches_l if m is not None]))
+    board_aware_cache.set('find_matches', board, None, sorted_matches)
+    return sorted_matches
 
 
 def _should_combine(m1, m2, board):
