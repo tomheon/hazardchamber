@@ -4,6 +4,8 @@ Code for dealing with the board.
 
 import copy
 
+import hashutils
+
 
 def _format_row(row):
     return "| %s |" % " | ".join([str(s).ljust(3, ' ') for s in row])
@@ -69,6 +71,9 @@ class Board(object):
         for row in reversed(range(self.side)):
             for col in reversed(range(self.side)):
                 yield row, col
+
+    def md5(self):
+        return hashutils.md5(str(self))
 
 
 def neighbors(row, col, side):
