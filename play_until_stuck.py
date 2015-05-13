@@ -36,7 +36,7 @@ def print_board(game_state):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('--random-seed')
+    parser.add_argument('--random-seed', type=int)
     parser.add_argument('--print-board',
                         action='store_true')
     args = parser.parse_args()
