@@ -15,7 +15,7 @@ class Match(object):
         self.squares = sorted(squares)
 
     def __str__(self):
-        return "Match(%s)" % ", ".join([str(s) for s in self.squares])
+        return "Match([%s])" % ", ".join([str(s) for s in self.squares])
 
     def __repr__(self):
         return str(self)
