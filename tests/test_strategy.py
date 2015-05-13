@@ -3,9 +3,11 @@ from textwrap import dedent
 from nose.tools import eq_, ok_
 
 from game import GameState
+from match import Match
 from parse import create_board_parser, parse_board
 from strategy import find_moves, rand_move_strat, first_move_strat, \
     no_move_strat
+from tutils import right_match, down_match
 
 FOUR_SIDE_PARSER = create_board_parser(side=4)
 
@@ -27,7 +29,9 @@ FIND_MOVES_CASES = [
             | R | Y | P | G |
             """),
      FOUR_SIDE_PARSER,
-     [((1, 3), (0, 3))]),
+     [((0, 3),
+       (1, 3),
+       [right_match(3)(0, 1)])]),
 
     (dedent("""\
             | R | P | P | Y |
@@ -36,9 +40,12 @@ FIND_MOVES_CASES = [
             | C | Y | P | G |
             """),
      FOUR_SIDE_PARSER,
-     [((3, 0), (2, 0)),
-      ((3, 0), (3, 1)),
-      ]),
+     [((2, 0),
+       (3, 0),
+       [down_match(3)(0, 0)]),
+      ((3, 0),
+       (3, 1),
+       [down_match(3)(1, 1)])]),
 
     (dedent("""\
             | Y | R | P | Y |
@@ -47,11 +54,18 @@ FIND_MOVES_CASES = [
             | G | Y | Y | G |
             """),
      FOUR_SIDE_PARSER,
-     [((0, 1), (0, 2)),
-      ((3, 0), (3, 1)),
-      ((2, 0), (3, 0)),
-      ((0, 1), (1, 1))
-      ]),
+     [((0, 1),
+       (0, 2),
+       [down_match(3)(0, 2)]),
+      ((0, 1),
+       (1, 1),
+       [right_match(3)(1, 0)]),
+      ((2, 0),
+       (3, 0),
+       [Match([(3, 0), (3, 1), (3, 2)])]),
+      ((3, 0),
+       (3, 1),
+       [down_match(3)(1, 1)])])
     ]
 
 
@@ -66,7 +80,9 @@ def test_find_moves():
 
 def _verify_find_moves(board, exp_moves_non_sym):
     moves = find_moves(board)
-    exp_moves = exp_moves_non_sym + [(b, a) for a, b in exp_moves_non_sym]
+    exp_moves = exp_moves_non_sym + [(b, a, m)
+                                     for a, b, m
+                                     in exp_moves_non_sym]
     eq_(sorted(exp_moves), moves)
 
 
@@ -87,8 +103,10 @@ def _verify_rand_move_strat(board, exp_moves_non_sym):
     if not exp_moves_non_sym:
         eq_(None, move)
     else:
-        exp_moves = exp_moves_non_sym + [(b, a) for a, b in exp_moves_non_sym]
-        ok_(move in exp_moves)
+        exp_moves = exp_moves_non_sym + [(b, a, m)
+                                         for a, b, m
+                                         in exp_moves_non_sym]
+        ok_(move in [(a, b) for a, b, m in exp_moves])
 
 
 def test_first_move_strat():
@@ -102,9 +120,11 @@ def _verify_first_move_strat(board, exp_moves_non_sym):
     if not exp_moves_non_sym:
         eq_(None, move)
     else:
-        exp_moves = exp_moves_non_sym + [(b, a) for a, b in exp_moves_non_sym]
+        exp_moves = exp_moves_non_sym + [(b, a, m)
+                                         for a, b, m
+                                         in exp_moves_non_sym]
         exp_moves.sort()
-        eq_(exp_moves[0], move)
+        eq_((exp_moves[0][0], exp_moves[0][1]), move)
 
 
 def test_no_move_strat():

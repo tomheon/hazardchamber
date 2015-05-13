@@ -13,7 +13,7 @@ def find_moves(board, stop_after=None):
     """
     Return all legal swap moves on the board as a sorted list of:
 
-    [((row1, col1), (row2, col2)), ...]
+    [((row1, col1), (row2, col2), matches), ...]
 
     Note that normally for each ((row1, col1), (row2, col2)) tuple, there will
     be a corresponding ((row2, col2), (row1, col1)) tuple, as tiles can be
@@ -33,8 +33,9 @@ def find_moves(board, stop_after=None):
         for row_n, col_n in neighbors(row, col, board.side):
             nb = board.copy()
             nb.swap(row, col, row_n, col_n)
-            if find_matches(nb):
-                moves.append(((row, col), (row_n, col_n)))
+            matches = find_matches(nb)
+            if matches:
+                moves.append(((row, col), (row_n, col_n), matches))
             if stop_after is not None and len(moves) >= stop_after:
                 sorted_moves = sorted(moves)
                 board_aware_cache.set('find_moves', board, stop_after,
@@ -55,7 +56,7 @@ def rand_move_strat(game_state):
     moves = find_moves(game_state.board)
     if not moves:
         return None
-    return random.choice(moves)
+    return random.choice([(t1, t2) for t1, t2, _ in moves])
 
 
 def first_move_strat(game_state):
@@ -67,7 +68,8 @@ def first_move_strat(game_state):
     moves = find_moves(game_state.board)
     if not moves:
         return None
-    return moves[0]
+    move = moves[0]
+    return (move[0], move[1])
 
 
 def no_move_strat(game_state):
