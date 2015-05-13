@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from nose.tools import eq_
+from nose.tools import eq_, ok_
 
 from parse import create_board_parser, parse_board
 from match import find_matches, find_matches_at, find_left_match_at, \
@@ -346,6 +346,23 @@ def _verify_find_matches(board, expected):
     eq_(sorted(expected), find_matches(board))
 
 
+def test_find_matches_with_stop_after():
+    for (board_s, parser, expected) in FIND_MATCHES_CASES:
+        board = parse_board(board_s, parser)
+        for stop_after in range(1, len(expected) + 1):
+            yield (_verify_find_matches_with_stop_after, board,
+                   expected, stop_after)
+
+
+def _verify_find_matches_with_stop_after(board, expected, stop_after):
+    matches = find_matches(board, stop_after=stop_after)
+    eq_(stop_after, len(matches))
+    for match in matches:
+        # we can't do a simple in, since we're preventing combining by doing a
+        # stop_after.
+        ok_(any(m.contains_match(match) for m in expected))
+
+
 def test_count_tiles_in_match():
     cases = [
         ([], 0),
@@ -411,3 +428,20 @@ def test_has_extent_at_least():
 
 def _verify_has_extent_at_least(match_args, extent, expected):
     eq_(expected, Match(match_args).has_extent_at_least(extent))
+
+
+def test_contains_match():
+    cases = [
+        (right_match(4)(0, 0), right_match(3)(0, 0), True),
+        (right_match(4)(0, 0), right_match(3)(0, 1), True),
+        (right_match(3)(0, 1), right_match(3)(0, 1), True),
+        (right_match(3)(0, 1), right_match(3)(1, 0), False),
+        (right_match(3)(0, 1), down_match(3)(0, 1), False),
+        ]
+
+    for m1, m2, contains in cases:
+        yield _verify_contains_match, m1, m2, contains
+
+
+def _verify_contains_match(m1, m2, contains):
+    eq_(contains, m1.contains_match(m2))

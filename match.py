@@ -88,6 +88,9 @@ class Match(object):
         """
         return Match(list(set(self.squares + other.squares)))
 
+    def contains_match(self, other):
+        return set(self.squares) >= set(other.squares)
+
 
 def _max_extents(squares, group_key, extent_key):
     squares.sort(key=group_key)
@@ -102,9 +105,11 @@ def _max_extents(squares, group_key, extent_key):
                     in itertools.groupby(enumerate(exts), _ind_minus_elem)]))
 
 
-def find_matches(board):
+def find_matches(board, stop_after=None):
     """
     Returns a sorted list of unique Match objects, one per 3-or-more match.
+
+    If `stop_after` is not None, returns that many matches at most.
 
     If there are no matches, returns an empty list.
     """
@@ -112,6 +117,8 @@ def find_matches(board):
     for row in range(board.side):
         for col in range(board.side):
             matches.update(set(find_matches_at(row, col, board)))
+            if stop_after is not None and len(matches) >= stop_after:
+                return sorted(list(matches)[:stop_after])
 
     matches_l = list(matches)
     length = len(matches_l)
