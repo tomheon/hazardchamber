@@ -194,6 +194,8 @@ def test_ensure_playable_board():
                           | Y   | Y   | P   | Y   |
                           """)),
             re.sub('\s', '', unparse_board(game.board)))
+        # it takes 3 shuffles with this seed to get a playable board with no
+        # matches
         expected_swaps = [(3, 3, 0, 0),
                           (3, 2, 2, 2),
                           (3, 1, 3, 2),
@@ -210,6 +212,7 @@ def test_ensure_playable_board():
                           (0, 2, 1, 1),
                           (0, 1, 2, 1),
                           (0, 0, 3, 1),
+
                           (3, 3, 0, 0),
                           (3, 2, 1, 1),
                           (3, 1, 1, 3),
@@ -226,6 +229,7 @@ def test_ensure_playable_board():
                           (0, 2, 3, 1),
                           (0, 1, 3, 0),
                           (0, 0, 0, 3),
+
                           (3, 3, 2, 1),
                           (3, 2, 3, 2),
                           (3, 1, 0, 3),
