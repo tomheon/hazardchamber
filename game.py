@@ -5,12 +5,12 @@ The game itself, with turns and back and forth and all that.
 from collections import namedtuple
 from itertools import cycle
 
-from board import new_rand_tile, CriticalTile
 from criticals import calc_critical_square
 from constants import MIN_MOVE_AGAIN, MIN_CREATE_CRITICAL
 from gravity import apply_gravity
 from match import find_matches
 from tile_destroyer import destroy_tiles
+from tiles import new_rand_tile, CriticalTile
 
 
 GameState = namedtuple('GameState',

@@ -6,6 +6,7 @@ from pyparsing import Keyword, Word, nums, Or, Optional, Group
 
 import board
 from constants import BOARD_SIDE
+import tiles
 
 
 def create_board_parser(side):
@@ -56,29 +57,29 @@ def to_tile(s):
     if len(s) == 1:
         t = s[0]
         if t == 'C':
-            return board.CriticalTile()
+            return tiles.CriticalTile()
         elif t == 'T':
-            return board.TeamupTile()
+            return tiles.TeamupTile()
         elif t == 'E':
-            return board.EmptyTile()
+            return tiles.EmptyTile()
         else:
-            return board.ColoredTile(color=t)
+            return tiles.ColoredTile(color=t)
     else:
         sub = s[1]
         if sub == 'P':
-            return board.ProtectTile(color=s[0],
+            return tiles.ProtectTile(color=s[0],
                                      strength=s[3],
                                      direction=s[2])
         elif sub == 'A':
-            return board.AttackTile(color=s[0],
+            return tiles.AttackTile(color=s[0],
                                     strength=s[3],
                                     direction=s[2])
         elif sub == 'S':
-            return board.StrikeTile(color=s[0],
+            return tiles.StrikeTile(color=s[0],
                                     strength=s[3],
                                     direction=s[2])
         elif sub == 'CD':
-            return board.CountdownTile(color=s[0],
+            return tiles.CountdownTile(color=s[0],
                                        turns_left=s[2])
         else:
             raise Exception("Bad subtype: %s" % s)

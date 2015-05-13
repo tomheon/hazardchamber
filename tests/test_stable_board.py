@@ -1,9 +1,9 @@
 from nose.tools import eq_, ok_
 
-from board import TeamupTile, ColoredTile
 from match import find_matches
 from stable_board import rand_stable_board
 from strategy import find_moves
+from tiles import TeamupTile, ColoredTile
 
 
 def test_rand_stable_board():

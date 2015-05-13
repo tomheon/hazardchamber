@@ -3,10 +3,11 @@ Generate a guaranteed stable board (for the beginning of a game).
 """
 
 from parse import unparse_board
-from board import Board, new_rand_tile, EmptyTile
+from board import Board
 from constants import BOARD_SIDE
 from match import find_matches_at
 from strategy import find_moves
+from tiles import new_rand_tile, EmptyTile
 
 
 # Max times we'll try a random tile in an empty square before declaring a

@@ -1,9 +1,10 @@
 import random
 
-from board import EmptyTile, ColoredTile, CriticalTile, TeamupTile, StrikeTile, \
-    AttackTile, ProtectTile, CountdownTile, Board
+from board import Board
 from constants import BOARD_SIDE
 from match import Match
+from tiles import EmptyTile, ColoredTile, CriticalTile, TeamupTile, \
+    StrikeTile, AttackTile, ProtectTile, CountdownTile
 
 
 def _rand_color():

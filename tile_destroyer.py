@@ -6,9 +6,9 @@ Handles clearing out rows / cols after 4+ matches, but not placing crits.
 Also does not let tiles fall--gravity.py handles that.
 """
 
-from board import EmptyTile
 from constants import MIN_DESTROY_ROW_OR_COL
 from match import find_matches
+from tiles import EmptyTile
 
 
 def destroy_tiles(board):
