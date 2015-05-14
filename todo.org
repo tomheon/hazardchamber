@@ -1,1 +1,4 @@
-* TODO support shuffling board when stuck
+* TODO use a consistent Square throughout (instead of row, col, (row, col) etc.)
+* TODO use a namedtuple like thing for find_moves return
+
+  And update strats to use better names.
