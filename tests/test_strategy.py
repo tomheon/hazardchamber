@@ -79,16 +79,16 @@ def test_find_moves():
 
 
 def _verify_find_moves(board, exp_moves_non_sym):
-    moves = find_moves(board)
+    moves_with_matches = find_moves(board)
     exp_moves = exp_moves_non_sym + [(b, a, m)
                                      for a, b, m
                                      in exp_moves_non_sym]
-    eq_(sorted(exp_moves), moves)
+    eq_(sorted(exp_moves), moves_with_matches)
 
 
 def _verify_find_moves_with_stop(board, exp_moves_non_sym, num_moves):
-    moves = find_moves(board, stop_after=num_moves)
-    eq_(num_moves, len(moves))
+    moves_with_matches = find_moves(board, stop_after=num_moves)
+    eq_(num_moves, len(moves_with_matches))
 
 
 def test_rand_move_strat():
