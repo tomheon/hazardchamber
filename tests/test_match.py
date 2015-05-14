@@ -8,6 +8,8 @@ from match import find_matches, find_matches_at, find_left_match_at, \
 from tutils import right_match, left_match, down_match, up_match
 
 
+THREE_SIDE_PARSER = create_board_parser(side=3)
+
 FOUR_SIDE_PARSER = create_board_parser(side=4)
 
 FIVE_SIDE_PARSER = create_board_parser(side=5)
@@ -445,3 +447,25 @@ def test_contains_match():
 
 def _verify_contains_match(m1, m2, contains):
     eq_(contains, m1.contains_match(m2))
+
+
+def test_color():
+    board_s = dedent("""\
+                     | C | C | Y |
+                     | T | T | T |
+                     | P | P | P |
+                     """)
+    board = parse_board(board_s, THREE_SIDE_PARSER)
+
+    cases = [
+        (right_match(3)(0, 0), 'Y'),
+        (right_match(3)(1, 0), 'T'),
+        (right_match(3)(2, 0), 'P'),
+        ]
+
+    for match, exp_color in cases:
+        yield _verify_color, match, exp_color, board
+
+
+def _verify_color(match, exp_color, board):
+    eq_(exp_color, match.color(board))

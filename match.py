@@ -92,6 +92,12 @@ class Match(object):
     def contains_match(self, other):
         return set(self.squares) >= set(other.squares)
 
+    def color(self, board):
+        for (row, col) in self.squares:
+            ap = board.at(row, col).ap()
+            if ap:
+                return ap[0]
+
 
 def _max_extents(squares, group_key, extent_key):
     squares.sort(key=group_key)
