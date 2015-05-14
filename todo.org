@@ -1,1 +1,13 @@
 * TODO use a consistent Square throughout (instead of row, col, (row, col) etc.)
+* TODO write a couple strats to play against AI
+
+  Judge purely by how quickly they reach certain thresholds in AP.
+
+  - prefer own colors to larger matches
+
+  - try to hinder ai matches first, then take own in various forms (rarest
+    first, closest first, etc.)
+
+  - match top
+
+  - match bottom
