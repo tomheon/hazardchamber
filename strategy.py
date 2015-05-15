@@ -122,7 +122,7 @@ def _ap(from_sq, to_sq, matches, colors, board):
     return ap
 
 
-def ap_seeking_strat(colors):
+def create_ap_seeking_strat(colors):
     """
     Return a strategy that seeks AP in `colors`, preferring those earlier in
     `colors` to those later.

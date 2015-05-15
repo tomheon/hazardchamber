@@ -6,7 +6,7 @@ from game import GameState
 from match import Match
 from parse import create_board_parser, parse_board
 from strategy import find_moves, rand_move_strat, first_move_strat, \
-    no_move_strat, ap_seeking_strat
+    no_move_strat, create_ap_seeking_strat
 from tutils import right_match, down_match
 
 FOUR_SIDE_PARSER = create_board_parser(side=4)
@@ -253,7 +253,7 @@ def test_ap_seeking_strat():
 
 
 def _verify_ap_seeking_strat(desc, board, colors, exp_move):
-    eq_(exp_move, ap_seeking_strat(colors)(_game_state(board)))
+    eq_(exp_move, create_ap_seeking_strat(colors)(_game_state(board)))
 
 
 def _game_state(board):
