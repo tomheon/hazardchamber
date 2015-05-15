@@ -30,7 +30,7 @@ def test_find_left_match_at():
                      | Y | Y | Y | Y |
                      | R | R | R | Y |
                      | Y | G | G | G |
-                     | E | E | E | E |
+                     |   |   |   |   |
                      """)
     board = parse_board(board_s, FOUR_SIDE_PARSER)
 
@@ -52,7 +52,7 @@ def test_find_right_match_at():
                      | Y | Y | Y | Y |
                      | R | R | R | Y |
                      | Y | G | G | G |
-                     | E | E | E | E |
+                     |   |   |   |   |
                      """)
     board = parse_board(board_s, FOUR_SIDE_PARSER)
 
@@ -71,10 +71,10 @@ def test_find_right_match_at():
 
 def test_find_down_match_at():
     board_s = dedent("""\
-                     | Y | Y | G | E |
-                     | Y | R | G | E |
-                     | Y | R | G | E |
-                     | Y | R | E | E |
+                     | Y | Y | G |   |
+                     | Y | R | G |   |
+                     | Y | R | G |   |
+                     | Y | R |   |   |
                      """)
     board = parse_board(board_s, FOUR_SIDE_PARSER)
 
@@ -93,10 +93,10 @@ def test_find_down_match_at():
 
 def test_find_up_match_at():
     board_s = dedent("""\
-                     | Y | Y | G | E |
-                     | Y | R | G | E |
-                     | Y | R | G | E |
-                     | Y | R | E | E |
+                     | Y | Y | G |   |
+                     | Y | R | G |   |
+                     | Y | R | G |   |
+                     | Y | R |   |   |
                      """)
     board = parse_board(board_s, FOUR_SIDE_PARSER)
 
@@ -115,9 +115,9 @@ def test_find_up_match_at():
 
 def test_find_matches_at():
     board_s = dedent("""\
-                     | Y | Y | Y | E |
-                     | Y | Y | E | E |
-                     | Y | Y | E | E |
+                     | Y | Y | Y |   |
+                     | Y | Y |   |   |
+                     | Y | Y |   |   |
                      | Y | R | R | R |
                      """)
     board = parse_board(board_s, FOUR_SIDE_PARSER)
@@ -156,7 +156,7 @@ def test_critical_as_second_match_tile():
                      | C | Y | R | Y |
                      | R | R | R | Y |
                      | Y | G | G | G |
-                     | E | E | E | E |
+                     |   |   |   |   |
                      """)
     board = parse_board(board_s, FOUR_SIDE_PARSER)
     eq_(None, find_right_match_at(0, 0, board))
@@ -182,9 +182,9 @@ def _verify_square_in_match(match, square, includes):
 # (board_s, parser, expected matches)
 FIND_MATCHES_CASES = [
     (dedent("""\
-            | Y | Y | Y | E |
-            | Y | Y | E | E |
-            | Y | Y | E | E |
+            | Y | Y | Y |   |
+            | Y | Y |   |   |
+            | Y | Y |   |   |
             | Y | R | R | R |
             """),
      FOUR_SIDE_PARSER,
@@ -196,8 +196,8 @@ FIND_MATCHES_CASES = [
 
     (dedent("""\
             | Y | Y | Y | Y |
-            | G | G | E | E |
-            | Y | Y | E | E |
+            | G | G |   |   |
+            | Y | Y |   |   |
             | Y | R | R | G |
             """),
      FOUR_SIDE_PARSER,
@@ -205,8 +205,8 @@ FIND_MATCHES_CASES = [
 
     (dedent("""\
             | Y | Y | Y | G |
-            | G | Y | E | E |
-            | Y | Y | E | E |
+            | G | Y |   |   |
+            | Y | Y |   |   |
             | Y | R | R | G |
             """),
      FOUR_SIDE_PARSER,
@@ -214,8 +214,8 @@ FIND_MATCHES_CASES = [
 
     (dedent("""\
             | Y | Y | Y | Y |
-            | G | Y | E | E |
-            | Y | Y | E | E |
+            | G | Y |   |   |
+            | Y | Y |   |   |
             | Y | R | R | G |
             """),
      FOUR_SIDE_PARSER,
@@ -223,8 +223,8 @@ FIND_MATCHES_CASES = [
 
     (dedent("""\
             | Y | Y | Y | Y |
-            | G | Y | E | E |
-            | Y | Y | E | E |
+            | G | Y |   |   |
+            | Y | Y |   |   |
             | Y | Y | Y | G |
             """),
      FOUR_SIDE_PARSER,
@@ -236,7 +236,7 @@ FIND_MATCHES_CASES = [
     (dedent("""\
             | Y | Y | Y | T | R |
             | R | R | R | R | R |
-            | Y | Y | C | E | T |
+            | Y | Y | C |   | T |
             | Y | R | R | R | T |
             | T | R | T | R | T |
             """),
