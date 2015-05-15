@@ -15,10 +15,10 @@ CASES = [
 
     ("AI prefers 4 matches to 3 of its own colors",
      dedent("""\
-            | Y | Y | G | Y |
+            | Y | Y |   | Y |
             | R | R | Y | R |
             | T | T | G | T |
-            | P | T | P | T |
+            |   |   |   |   |
             """),
      FOUR_SIDE_PARSER,
      ['T', 'R'],
@@ -26,10 +26,10 @@ CASES = [
 
     ("AI prefers 4 matches of its own colors to 3 of non",
      dedent("""\
-            | Y | Y | G | Y |
+            | Y | Y |   | Y |
             | R | R | Y | R |
             | T | T | G | T |
-            | P | T | P | T |
+            |   |   |   |   |
             """),
      FOUR_SIDE_PARSER,
      ['Y'],
@@ -37,10 +37,10 @@ CASES = [
 
     ("AI prefers 4 matches of its own colors to 3 of own",
      dedent("""\
-            | Y | Y | G | Y |
+            | Y | Y |   | Y |
             | R | R | Y | R |
             | T | T | G | T |
-            | P | T | P | T |
+            |   |   |   |   |
             """),
      FOUR_SIDE_PARSER,
      ['Y', 'R', 'T'],
@@ -48,10 +48,10 @@ CASES = [
 
     ("AI prefers 3 matches of its own colors to 3 of non",
      dedent("""\
-            | Y | Y | G | R |
+            | Y | Y |   | R |
             | R | R | Y | R |
-            | T | T | G | T |
-            | P | T | P | T |
+            | T | T |   | T |
+            |   |   |   |   |
             """),
      FOUR_SIDE_PARSER,
      ['R'],
@@ -59,10 +59,10 @@ CASES = [
 
     ("AI sees only straight matches",
      dedent("""\
-            | Y | Y | G | Y |
-            | G | G | R | R |
-            | T | T | G | T |
-            | P | T | G | T |
+            |   |   | G |   |
+            | G | G |   |   |
+            |   |   | G |   |
+            |   |   | G |   |
             """),
      FOUR_SIDE_PARSER,
      ['Y'],
