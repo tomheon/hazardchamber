@@ -58,7 +58,7 @@ def to_tile(s):
     if len(s) == 1:
         t = s[0]
         if t == '*':
-            return tiles.BlankTile()
+            return tiles.NullTile()
         elif t == 'C':
             return tiles.CriticalTile()
         elif t == 'T':

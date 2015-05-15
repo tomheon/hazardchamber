@@ -7,7 +7,7 @@ import random
 from termcolor import colored
 
 
-class BlankTile(object):
+class NullTile(object):
     """
     Used in tests only, to make the tiles we care about more visible.  Doesn't
     match anything, but behaves like a normal tile under gravity.

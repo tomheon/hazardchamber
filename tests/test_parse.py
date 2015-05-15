@@ -16,7 +16,7 @@ def test_parse_and_unparse_randoms():
         yield _verify_parse_and_unparse, random_midgame_board_s()
 
 
-def test_blanks():
+def test_nulls():
     board_s = dedent("""\
                      |   | R | R |
                      | Y |   | G |

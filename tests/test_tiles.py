@@ -1,7 +1,7 @@
 from nose.tools import eq_, ok_
 
 from tiles import EmptyTile, ColoredTile, CriticalTile, TeamupTile, \
-    StrikeTile, AttackTile, ProtectTile, CountdownTile, BlankTile, \
+    StrikeTile, AttackTile, ProtectTile, CountdownTile, NullTile, \
     new_rand_tile
 
 
@@ -39,8 +39,8 @@ CRITICAL2 = CriticalTile()
 TEAMUP = TeamupTile()
 TEAMUP2 = TeamupTile()
 
-BLANK = BlankTile()
-BLANK2 = BlankTile()
+NULL = NullTile()
+NULL2 = NullTile()
 
 
 AP_CASES = [
@@ -120,17 +120,17 @@ TILE_MATCH_TESTS = [
     (EMPTY, CRITICAL, False),
     (EMPTY, TEAMUP, False),
 
-    # blank tiles
-    (BLANK, BLANK, False),
-    (BLANK, BLANK2, False),
-    (BLANK, EMPTY, False),
-    (BLANK, YELLOW, False),
-    (BLANK, YELLOW_STRIKE_123_OFFENSE, False),
-    (BLANK, YELLOW_ATTACK_123_OFFENSE, False),
-    (BLANK, YELLOW_PROTECT_123_OFFENSE, False),
-    (BLANK, YELLOW_COUNTDOWN_5, False),
-    (BLANK, CRITICAL, False),
-    (BLANK, TEAMUP, False),
+    # null tiles
+    (NULL, NULL, False),
+    (NULL, NULL2, False),
+    (NULL, EMPTY, False),
+    (NULL, YELLOW, False),
+    (NULL, YELLOW_STRIKE_123_OFFENSE, False),
+    (NULL, YELLOW_ATTACK_123_OFFENSE, False),
+    (NULL, YELLOW_PROTECT_123_OFFENSE, False),
+    (NULL, YELLOW_COUNTDOWN_5, False),
+    (NULL, CRITICAL, False),
+    (NULL, TEAMUP, False),
 
     # criticals
     (CRITICAL, CRITICAL, True),
