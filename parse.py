@@ -40,8 +40,9 @@ def create_board_parser(side):
 
     Uncolored = Or([Teamup, Critical, Empty])
 
-    Square = Group(Optional(Edge) + Or([Colored, Uncolored]) + Edge)
-    Row = Group(Square * side)
+    Square = Group(Optional(Or([Colored, Uncolored]),
+                            default='*') + Edge)
+    Row = Group(Edge + (Square * side))
     Board = Row * side
     return Board
 
@@ -56,7 +57,9 @@ def strip_pipes(sq):
 def to_tile(s):
     if len(s) == 1:
         t = s[0]
-        if t == 'C':
+        if t == '*':
+            return tiles.BlankTile()
+        elif t == 'C':
             return tiles.CriticalTile()
         elif t == 'T':
             return tiles.TeamupTile()
@@ -88,7 +91,7 @@ def to_tile(s):
 
 
 def parse_row(row):
-    stripped = [strip_pipes(s) for s in row]
+    stripped = [strip_pipes(s) for s in row if s != '|']
     return [to_tile(s) for s in stripped]
 
 

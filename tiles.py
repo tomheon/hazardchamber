@@ -5,6 +5,37 @@ Code for dealing with tiles.
 import random
 
 
+class BlankTile(object):
+    """
+    Used in tests only, to make the tiles we care about more visible.  Doesn't
+    match anything, but behaves like a normal tile under gravity.
+    """
+
+    def __str__(self):
+        return " "
+
+    def matches(self, tile):
+        return False
+
+    def is_empty(self):
+        return False
+
+    def is_critical(self):
+        return False
+
+    def is_color(self):
+        return False
+
+    def is_game_tile(self):
+        return False
+
+    def is_teamup(self):
+        return False
+
+    def ap(self):
+        return None
+
+
 class EmptyTile(object):
 
     def __str__(self):
