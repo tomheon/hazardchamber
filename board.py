@@ -18,6 +18,7 @@ class Board(object):
         self.rows = rows
 
     def __str__(self):
+        # TODO: find longest tile and pad to that instead of 3
         return '\n'.join([_format_row(row) for row in self.rows])
 
     def __eq__(self, other):
@@ -74,6 +75,17 @@ class Board(object):
 
     def md5(self):
         return hashutils.md5(str(self))
+
+    def as_fancy_str(self):
+        # TODO: find longest tile and pad to that instead of 3
+        FILL_FACTOR = 3
+        spacer = '-' * (self.side * (FILL_FACTOR + 3) + 1)
+        lines = [spacer]
+        for row in self.rows:
+            lines.append("| %s |" % " | ".join([t.as_fancy_str(3)
+                                                for t in row]))
+            lines.append(spacer)
+        return '\n'.join(lines)
 
 
 def neighbors(row, col, side):

@@ -4,6 +4,8 @@ Code for dealing with tiles.
 
 import random
 
+from termcolor import colored
+
 
 class BlankTile(object):
     """
@@ -35,6 +37,9 @@ class BlankTile(object):
     def ap(self):
         return None
 
+    def as_fancy_str(self, ljust):
+        return str(self).ljust(ljust, ' ')
+
 
 class EmptyTile(object):
 
@@ -62,6 +67,9 @@ class EmptyTile(object):
     def ap(self):
         return None
 
+    def as_fancy_str(self, ljust):
+        return str(self).ljust(ljust, ' ')
+
 
 class GameTile(object):
 
@@ -83,6 +91,9 @@ class GameTile(object):
     def ap(self):
         return None
 
+    def as_fancy_str(self, ljust):
+        return str(self).ljust(ljust, ' ')
+
 
 class ColoredTile(GameTile):
 
@@ -101,6 +112,19 @@ class ColoredTile(GameTile):
 
     def ap(self):
         return (self.color, 1)
+
+    def as_fancy_str(self, ljust):
+        return _color(str(self).ljust(ljust, ' '), self.color)
+
+
+def _color(s, color):
+    color_to_str = dict(Y='yellow',
+                        R='red',
+                        G='green',
+                        BL='cyan',
+                        BK='grey',
+                        P='magenta')
+    return colored(s, color_to_str[color])
 
 
 class CriticalTile(GameTile):
