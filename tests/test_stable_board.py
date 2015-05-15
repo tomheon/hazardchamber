@@ -7,7 +7,7 @@ from tiles import TeamupTile, ColoredTile
 
 
 def test_rand_stable_board():
-    for _ in range(10):
+    for _ in range(3):
         yield _verify_rand_stable_board, rand_stable_board()
 
 
