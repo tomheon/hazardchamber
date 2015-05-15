@@ -16,7 +16,7 @@ from stable_board import rand_stable_board
 from strategy import create_ap_seeking_strat
 
 
-def one_hundred_turns(game_state):
+def ten_turns(game_state):
     return game_state.turn_count > 10
 
 
@@ -48,7 +48,7 @@ def main():
                 offense=offense,
                 defense=defense,
                 pre_move=print_ap,
-                stop_condition=one_hundred_turns)
+                stop_condition=ten_turns)
     print "O colors: %s" % ' '.join(colors)
     print "D colors: %s" % ' '.join(defense_colors)
     print "---"
