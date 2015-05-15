@@ -2,8 +2,6 @@
 Code for dealing with the board.
 """
 
-import copy
-
 import hashutils
 
 
@@ -48,7 +46,7 @@ class Board(object):
         self.rows[row][col] = tile
 
     def copy(self):
-        return copy.deepcopy(self)
+        return Board([[t.copy() for t in row] for row in self.rows])
 
     @property
     def side(self):

@@ -40,6 +40,9 @@ class NullTile(object):
     def as_fancy_str(self, ljust):
         return str(self).ljust(ljust, ' ')
 
+    def copy(self):
+        return self
+
 
 class EmptyTile(object):
 
@@ -70,6 +73,9 @@ class EmptyTile(object):
     def as_fancy_str(self, ljust):
         return str(self).ljust(ljust, ' ')
 
+    def copy(self):
+        return self
+
 
 class GameTile(object):
 
@@ -93,6 +99,9 @@ class GameTile(object):
 
     def as_fancy_str(self, ljust):
         return str(self).ljust(ljust, ' ')
+
+    def copy(self):
+        return self
 
 
 class ColoredTile(GameTile):
@@ -200,6 +209,11 @@ class CountdownTile(ColoredTile):
 
     def __str__(self):
         return "%s CD %s" % (self.color, self.turns_left)
+
+    def copy(self):
+        return CountdownTile(color=self.color,
+                             turns_left=self.turns_left,
+                             on_countdown=self.on_countdown)
 
 
 NEW_TILES = [

@@ -50,6 +50,9 @@ class Modifiable(object):
     def __init__(self, data):
         self.data = data
 
+    def copy(self):
+        return Modifiable(self.data)
+
 
 def test_copy_isolates_changes():
     board = Board([[Modifiable('A'), Modifiable('B')],
