@@ -60,24 +60,24 @@ def run_sim(sim_id, num_protect_tiles, num_turns):
     game.play()
 
 
-def run_sims(num_protect_tiles, num_turns, num_trials):
-    for i in range(num_trials):
+def run_sims(max_protect_tiles, num_turns):
+    for i in range(max_protect_tiles):
+        num_protect_tiles = i + 1
         run_sim("%s-%s" % (num_protect_tiles, i),
                 num_protect_tiles, num_turns)
 
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('--num-turns', type=int, default=50)
+    parser.add_argument('--num-turns', type=int, default=20)
     parser.add_argument('--num-trials', type=int, default=1000)
     parser.add_argument('--max-protect-tiles', type=int, default=64)
     parser.add_argument('random_seed', type=int)
     args = parser.parse_args()
     random.seed(args.random_seed)
 
-    for i in range(args.max_protect_tiles):
-        num_protect_tiles = i + 1
-        run_sims(num_protect_tiles, args.num_turns, args.num_trials)
+    for i in range(args.num_trials):
+        run_sims(args.max_protect_tiles, args.num_turns)
 
 
 if __name__ == '__main__':
