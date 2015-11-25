@@ -60,10 +60,10 @@ def run_sim(sim_id, num_protect_tiles, num_turns):
     game.play()
 
 
-def run_sims(max_protect_tiles, num_turns):
+def run_sims(trial, max_protect_tiles, num_turns):
     for i in range(max_protect_tiles):
         num_protect_tiles = i + 1
-        run_sim("%s-%s" % (num_protect_tiles, i),
+        run_sim("%s-%s" % (num_protect_tiles, trial),
                 num_protect_tiles, num_turns)
 
 
@@ -77,7 +77,7 @@ def main():
     random.seed(args.random_seed)
 
     for i in range(args.num_trials):
-        run_sims(args.max_protect_tiles, args.num_turns)
+        run_sims(i, args.max_protect_tiles, args.num_turns)
 
 
 if __name__ == '__main__':
