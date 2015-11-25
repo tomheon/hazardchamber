@@ -10,4 +10,4 @@ lint:
 test:
 	env/bin/nosetests
 
-.PHONY: env_req lint test
+.PHONY: install_requirement lint test
