@@ -15,7 +15,7 @@ from tiles import new_rand_tile, EmptyTile
 MAX_TRIES = 100
 
 
-def rand_stable_board(board_side=BOARD_SIDE):
+def rand_stable_board(board_side=BOARD_SIDE, no_teamups=False):
     """
     Generate a random stable board (meaning with no current matches) of side
     `board_side`.
@@ -42,7 +42,7 @@ def rand_stable_board(board_side=BOARD_SIDE):
                     raise Exception(
                         "Unstable cell (%d, %d) after %d tries %s" %
                         (row, col, MAX_TRIES, unparse_board(board)))
-                board.set_at(row, col, new_rand_tile())
+                board.set_at(row, col, new_rand_tile(no_teamups=no_teamups))
 
                 if not find_matches_at(row, col, board):
                     break

@@ -19,6 +19,10 @@ class Board(object):
         # TODO: find longest tile and pad to that instead of 3
         return '\n'.join([_format_row(row) for row in self.rows])
 
+    def __iter__(self):
+        for row, col in self.squares_from_bottom_right():
+            yield self.at(row, col)
+
     def __eq__(self, other):
         return isinstance(other, Board) and self.rows == other.rows
 

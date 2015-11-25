@@ -34,6 +34,9 @@ class NullTile(object):
     def is_teamup(self):
         return False
 
+    def protection(self, direction):
+        return 0
+
     def ap(self):
         return None
 
@@ -76,6 +79,9 @@ class EmptyTile(object):
     def copy(self):
         return self
 
+    def protection(self, direction):
+        return 0
+
 
 class GameTile(object):
 
@@ -103,6 +109,9 @@ class GameTile(object):
     def copy(self):
         return self
 
+    def protection(self, direction):
+        return 0
+
 
 class ColoredTile(GameTile):
 
@@ -124,6 +133,9 @@ class ColoredTile(GameTile):
 
     def as_fancy_str(self, ljust):
         return _color(str(self).ljust(ljust, ' '), self.color)
+
+    def protection(self, direction):
+        return 0
 
 
 def _color(s, color):
@@ -195,6 +207,12 @@ class ProtectTile(ColoredTile):
     def __str__(self):
         return "%s P %s %s" % (self.color, self.direction, self.strength)
 
+    def protection(self, direction):
+        if self.direction == direction:
+            return self.strength
+        else:
+            return 0
+
 
 class CountdownTile(ColoredTile):
 
@@ -227,8 +245,11 @@ NEW_TILES = [
     ]
 
 
-def new_rand_tile():
+def new_rand_tile(no_teamups=False):
     """
-    Return a new random color or teamup tile.
+    Return a new random color or teamup tile (unless no_teamups is True).
     """
-    return random.choice(NEW_TILES)()
+    while True:
+        tile = random.choice(NEW_TILES)()
+        if not tile.is_teamup() or not no_teamups:
+            return tile
