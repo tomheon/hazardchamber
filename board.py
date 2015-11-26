@@ -89,6 +89,9 @@ class Board(object):
             lines.append(spacer)
         return '\n'.join(lines)
 
+    def protection(self, direction):
+        return sum(sq.protection(direction) for sq in self)
+
 
 def neighbors(row, col, side):
     """

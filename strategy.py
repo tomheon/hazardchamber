@@ -7,6 +7,7 @@ import itertools
 import random
 
 from board import neighbors
+from board_settler import settle_board
 import board_aware_cache
 from criticals import calc_critical_square
 from gravity import apply_gravity
@@ -86,6 +87,46 @@ def first_move_strat(game_state):
         return None
     move_with_match = moves_with_matches[0]
     return (move_with_match.from_sq, move_with_match.to_sq)
+
+
+def create_protect_protects_strat(direction):
+    """
+    Create a strat that minimizes the number of protection in `direction` lost.
+
+    Ties are broken randomly.
+    """
+
+    def protect_protects_strat(game_state):
+        moves_with_matches = find_moves(game_state.board)
+        protection_with_moves = []
+
+        seen_moves = set()
+
+        for move_with_matches in moves_with_matches:
+            from_sq = move_with_matches.from_sq
+            to_sq = move_with_matches.to_sq
+
+            directionless_move = frozenset([from_sq, to_sq])
+            if directionless_move in seen_moves:
+                continue
+            seen_moves.add(directionless_move)
+
+            board = game_state.board.copy()
+            board.swap(from_sq[0], from_sq[1], to_sq[0], to_sq[1])
+            board = settle_board(board)
+            protection_with_moves.append((board.protection,
+                                          (from_sq, to_sq)))
+
+        max_protection = 0
+        if protection_with_moves:
+            max_protection = max(p[0] for p in protection_with_moves)
+
+        return random.choice([p[1]
+                              for p
+                              in protection_with_moves
+                              if p[0] == max_protection])
+
+    return protect_protects_strat
 
 
 def no_move_strat(game_state):
