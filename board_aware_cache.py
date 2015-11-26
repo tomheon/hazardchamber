@@ -17,3 +17,8 @@ def set(operation, board, extra, val):
     md5 = board.md5()
     key = (operation, md5, extra)
     CACHE[key] = val
+
+
+def clear():
+    global CACHE
+    CACHE = dict()

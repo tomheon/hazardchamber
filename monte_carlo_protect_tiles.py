@@ -7,6 +7,7 @@ from argparse import ArgumentParser
 import random
 
 from aimulator import create_ai_strat
+import board_aware_cache
 from game import Game
 from player import Player
 from stable_board import rand_stable_board
@@ -53,6 +54,8 @@ def run_sim(sim_id, num_protect_tiles, num_turns, use_protect_protects):
                 defense=defense,
                 pre_move=mk_print_protection(sim_id, num_protect_tiles),
                 stop_condition=stop_after_n_turns(num_turns))
+
+    board_aware_cache.clear()
 
     game.play()
 
